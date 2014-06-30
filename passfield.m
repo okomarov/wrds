@@ -6,8 +6,6 @@ classdef passfield < hgsetget
         BusyAction = 'queue'
         ButtonDownFcn
         Callback
-        CreateFcn
-        DeleteFcn
         EchoChar = char(9679);
         Enable = 'on'
         FontSize = 8
@@ -27,9 +25,7 @@ classdef passfield < hgsetget
         UIContextMenu
         Units = 'pixels'
         UserData
-        Value = 0
         Visible = 'on'
-
     end
     
     properties %(Access = private, Hidden = true)
@@ -99,6 +95,15 @@ classdef passfield < hgsetget
             obj.ForegroundColor = val;
         end
         
+        function set.HandleVisibility(obj, val)
+            val = isValidProp({'on','off','callback'}, val);
+            % Update hg container 
+            container                  = get(obj,'hgcont');
+            container.HandleVisibility = val;
+            % Update property
+            obj.HandleVisibility = val;
+        end
+        
         function set.HorizontalAlignment(obj, val)
             accepted = {'left','center','right'};
             idx      = strncmpi(val, accepted, numel(val));
@@ -125,6 +130,15 @@ classdef passfield < hgsetget
             peer.setToolTipText(val);
             % Update property
             obj.TooltipString = val;
+        end
+        
+        function set.Units(obj, val)
+            val = isValidProp({'centimeters','characters','inches','normalized','pixels','points'}, val);
+            % Update hg container 
+            container       = get(obj,'hgcont');
+            container.Units = val;
+            % Update property
+            obj.Units = val;
         end
         
         function set.Visible(obj,val)
