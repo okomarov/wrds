@@ -105,9 +105,7 @@ classdef passfield < hgsetget
         end
         
         function set.HorizontalAlignment(obj, val)
-            accepted = {'left','center','right'};
-            idx      = strncmpi(val, accepted, numel(val));
-            val      = accepted{idx};
+            val = isValidProp({'left','center','right'}, val);
             % Update java peer
             peer                   = get(obj, 'hjpeer');
             newHorizontalAlignment = javax.swing.JTextField.(upper(val));
@@ -155,5 +153,15 @@ classdef passfield < hgsetget
             pass         = obj.hjpeer.getPassword;
             obj.Password = reshape(pass,1,numel(pass));
         end
+        
+        function val = isValidProp(list, val)
+            idx = strncmpi(val, list, numel(val));
+            if nnz(idx) ~= 1
+                ME = MException('passfield:invalidProperty','Invalid or ambiguous property.');
+                throwAsCaller(ME)
+            end
+            val = list{idx};
+        end
+        
     end
 end
