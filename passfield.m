@@ -2,39 +2,37 @@ classdef passfield < hgsetget
     
     properties
         BackgroundColor = [0.941176 0.941176 0.941176]
-        Callback
-        CData
-        EchoChar = char(9679);
-        Enable = 'on'
-        Extent = [0 0 4 4]
-        FontSize = 8
-        FontUnits = 'points'
-        ForegroundColor = [0 0 0]
-        HorizontalAlignment = 'center'
-        KeyPressFcn
-        Position = [20 20 60 20]
-        Style = 'password'
-        TooltipString
-        Units = 'pixels'
-        Value = 0
         BeingDeleted = 'off'
+        BusyAction = 'queue'
         ButtonDownFcn
+        Callback
         CreateFcn
         DeleteFcn
-        BusyAction = 'queue'
+        EchoChar = char(9679);
+        Enable = 'on'
+        FontSize = 8
+        ForegroundColor = [0 0 0]
         HandleVisibility = 'on'
         HitTest = 'on'
+        HorizontalAlignment = 'center'
         Interruptible = 'on'
+        KeyPressFcn
         Parent
         Password
+        Position = [20 20 60 20]
         Selected = 'off'
+        Style = 'password'
         Tag
+        TooltipString
         UIContextMenu
+        Units = 'pixels'
         UserData
+        Value = 0
         Visible = 'on'
+
     end
     
-    properties (Access = private, Hidden = true)
+    properties %(Access = private, Hidden = true)
         jpeer
         hobj
     end
