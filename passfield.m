@@ -1,7 +1,7 @@
 classdef passfield < hgsetget
     
     properties
-        BackgroundColor = [0.941176 0.941176 0.941176]
+        BackgroundColor
         BeingDeleted = 'off'
         BusyAction = 'queue'
         ButtonDownFcn
@@ -42,19 +42,20 @@ classdef passfield < hgsetget
             
             % Create java peer
             obj.hjpeer = handle(javaObjectEDT('javax.swing.JPasswordField'), 'CallbackProperties');
-            
-            % Set default properties
-            obj.hjpeer.setBackground(java.awt.Color(0.941176,0.941176,0.941176));
-            
-            % Add listener on the field
+
+            % LISTENERS
+            % -------------------------------------------------------------
+            % Password (hjpeer -> obj)
             hdoc    = handle(obj.hjpeer.getDocument);
             lstfun  = @(hdoc,evt) obj.updatePassword();
             hlst(1) = handle.listener(hdoc,'insertUpdate',lstfun);
             hlst(2) = handle.listener(hdoc,'removeUpdate',lstfun);
             setappdata(obj.hjpeer,'PasswordListener',hlst);
             
+            
             % Embed into the graphic container
             [~, obj.hgcont] = javacomponent(obj.hjpeer);
+
         end
         
 % =========================================================================
@@ -63,7 +64,7 @@ classdef passfield < hgsetget
         function set.BackgroundColor(obj, val)
             % Update java peer
             peer     = get(obj, 'hjpeer');
-            newColor = java.awt.Color(val);
+            newColor = java.awt.Color(val(1),val(2),val(3));
             peer.setBackground(newColor);
             % Update property
             obj.BackgroundColor = val;
@@ -110,6 +111,14 @@ classdef passfield < hgsetget
             obj.HorizontalAlignment = val;
         end
         
+        function set.Position(obj,val)
+            % Update hg container 
+            container          = get(obj,'hgcont');
+            container.Position = val;
+            % Update property
+            obj.Position = val;
+        end
+        
     end
     
     methods (Access = private)
@@ -117,6 +126,5 @@ classdef passfield < hgsetget
             pass         = obj.hjpeer.getPassword;
             obj.Password = reshape(pass,1,numel(pass));
         end
-
     end
 end
