@@ -26,6 +26,7 @@ classdef passfield < hgsetget
         HitTest = 'on'
         Interruptible = 'on'
         Parent
+        Password
         Selected = 'off'
         Tag
         UIContextMenu
@@ -46,6 +47,13 @@ classdef passfield < hgsetget
             
             % Set default properties
             obj.jpeer.setBackground(java.awt.Color(0.941176,0.941176,0.941176));
+            
+            % Add listener on the field
+            hdoc    = handle(obj.jpeer.getDocument);
+            lstfun  = @(hdoc,evt) obj.updatePassword();
+            hlst(1) = handle.listener(hdoc,'insertUpdate',lstfun);
+            hlst(2) = handle.listener(hdoc,'removeUpdate',lstfun);
+            setappdata(obj.jpeer,'PasswordListener',hlst);
             
             % Embed into the graphic container
             [~, obj.hobj] = javacomponent(obj.jpeer);
@@ -107,7 +115,10 @@ classdef passfield < hgsetget
     end
     
     methods (Access = private)
-        
-        
+        function updatePassword(obj)
+            pass         = obj.jpeer.getPassword;
+            obj.Password = reshape(pass,1,numel(pass));
+        end
+
     end
 end
