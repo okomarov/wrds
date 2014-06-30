@@ -33,28 +33,28 @@ classdef passfield < hgsetget
     end
     
     properties %(Access = private, Hidden = true)
-        jpeer
-        hobj
+        hjpeer
+        hgcont
     end
     methods
         function obj = passfield(varargin)
             % PASSFIELD Create a password field 
             
             % Create java peer
-            obj.jpeer = handle(javaObjectEDT('javax.swing.JPasswordField'), 'CallbackProperties');
+            obj.hjpeer = handle(javaObjectEDT('javax.swing.JPasswordField'), 'CallbackProperties');
             
             % Set default properties
-            obj.jpeer.setBackground(java.awt.Color(0.941176,0.941176,0.941176));
+            obj.hjpeer.setBackground(java.awt.Color(0.941176,0.941176,0.941176));
             
             % Add listener on the field
-            hdoc    = handle(obj.jpeer.getDocument);
+            hdoc    = handle(obj.hjpeer.getDocument);
             lstfun  = @(hdoc,evt) obj.updatePassword();
             hlst(1) = handle.listener(hdoc,'insertUpdate',lstfun);
             hlst(2) = handle.listener(hdoc,'removeUpdate',lstfun);
-            setappdata(obj.jpeer,'PasswordListener',hlst);
+            setappdata(obj.hjpeer,'PasswordListener',hlst);
             
             % Embed into the graphic container
-            [~, obj.hobj] = javacomponent(obj.jpeer);
+            [~, obj.hgcont] = javacomponent(obj.hjpeer);
         end
         
 % =========================================================================
@@ -62,7 +62,7 @@ classdef passfield < hgsetget
 % =========================================================================
         function set.BackgroundColor(obj, val)
             % Update java peer
-            peer     = get(obj, 'jpeer');
+            peer     = get(obj, 'hjpeer');
             newColor = java.awt.Color(val);
             peer.setBackground(newColor);
             % Update property
@@ -74,7 +74,7 @@ classdef passfield < hgsetget
                 error('passfield:printEchoChar','The ''EchoChar'' should a graphic character.')
             end
             % Update java peer
-            peer = get(obj, 'jpeer');
+            peer = get(obj, 'hjpeer');
             peer.setEchoChar(val);
             % Update property
             obj.EchoChar = val;
@@ -82,7 +82,7 @@ classdef passfield < hgsetget
         
         function set.FontSize(obj, val)
             % Update java peer
-            peer    = get(obj, 'jpeer');
+            peer    = get(obj, 'hjpeer');
             newFont = peer.getFont.deriveFont(val);
             peer.setFont(newFont);
             % Update property
@@ -91,7 +91,7 @@ classdef passfield < hgsetget
         
         function set.ForegroundColor(obj, val)
             % Update java peer
-            peer     = get(obj, 'jpeer');
+            peer     = get(obj, 'hjpeer');
             newColor = java.awt.Color(val(1),val(2),val(3));
             peer.setForeground(newColor);
             % Update property
@@ -103,7 +103,7 @@ classdef passfield < hgsetget
             idx      = strncmpi(val, accepted, numel(val));
             val      = accepted{idx};
             % Update java peer
-            peer                   = get(obj, 'jpeer');
+            peer                   = get(obj, 'hjpeer');
             newHorizontalAlignment = javax.swing.JTextField.(upper(val));
             peer.setHorizontalAlignment(newHorizontalAlignment);
             % Update property
@@ -114,7 +114,7 @@ classdef passfield < hgsetget
     
     methods (Access = private)
         function updatePassword(obj)
-            pass         = obj.jpeer.getPassword;
+            pass         = obj.hjpeer.getPassword;
             obj.Password = reshape(pass,1,numel(pass));
         end
 
