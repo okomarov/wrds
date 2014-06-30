@@ -19,7 +19,7 @@ classdef passfield < hgsetget
         KeyPressFcn
         Parent
         Password
-        Position = [20 20 60 20]
+        Position
         Selected = 'off'
         Style = 'password'
         Tag
@@ -52,10 +52,10 @@ classdef passfield < hgsetget
             hlst(2) = handle.listener(hdoc,'removeUpdate',lstfun);
             setappdata(obj.hjpeer,'PasswordListener',hlst);
             
-            
             % Embed into the graphic container
             [~, obj.hgcont] = javacomponent(obj.hjpeer);
 
+            % Update default properties
         end
         
 % =========================================================================
@@ -119,6 +119,21 @@ classdef passfield < hgsetget
             obj.Position = val;
         end
         
+        function set.TooltipString(obj,val)
+            % Update java peer
+            peer = get(obj, 'hjpeer');
+            peer.setToolTipText(val);
+            % Update property
+            obj.TooltipString = val;
+        end
+        
+        function set.Visible(obj,val)
+            % Update hg container 
+            container         = get(obj,'hgcont');
+            container.Visible = val;
+            % Update property
+            obj.Visible = val;
+        end
     end
     
     methods (Access = private)
