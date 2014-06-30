@@ -4,6 +4,7 @@ classdef passfield < hgsetget
         BackgroundColor = [0.941176 0.941176 0.941176]
         Callback
         CData
+        EchoChar = char(9679);
         Enable = 'on'
         Extent = [0 0 4 4]
         FontSize = 8
@@ -50,39 +51,57 @@ classdef passfield < hgsetget
             [~, obj.hobj] = javacomponent(obj.jpeer);
         end
         
+% =========================================================================
+% SET 
+% =========================================================================
         function set.BackgroundColor(obj, val)
-            obj.BackgroundColor = val;
             % Update java peer
             peer     = get(obj, 'jpeer');
             newColor = java.awt.Color(val);
             peer.setBackground(newColor);
+            % Update property
+            obj.BackgroundColor = val;
+        end
+        
+        function set.EchoChar(obj, val)
+            if ~isscalar(val) || ~isstrprop(val,'print')
+                error('passfield:printEchoChar','The ''EchoChar'' should a graphic character.')
+            end
+            % Update java peer
+            peer = get(obj, 'jpeer');
+            peer.setEchoChar(val);
+            % Update property
+            obj.EchoChar = val;
         end
         
         function set.FontSize(obj, val)
-            obj.FontSize = val;
             % Update java peer
             peer    = get(obj, 'jpeer');
             newFont = peer.getFont.deriveFont(val);
             peer.setFont(newFont);
+            % Update property
+            obj.FontSize = val;
         end
         
         function set.ForegroundColor(obj, val)
-            obj.ForegroundColor = val;
             % Update java peer
             peer     = get(obj, 'jpeer');
             newColor = java.awt.Color(val(1),val(2),val(3));
             peer.setForeground(newColor);
+            % Update property
+            obj.ForegroundColor = val;
         end
         
         function set.HorizontalAlignment(obj, val)
             accepted = {'left','center','right'};
             idx      = strncmpi(val, accepted, numel(val));
             val      = accepted{idx};
-            obj.HorizontalAlignment = val;
             % Update java peer
             peer                   = get(obj, 'jpeer');
             newHorizontalAlignment = javax.swing.JTextField.(upper(val));
             peer.setHorizontalAlignment(newHorizontalAlignment);
+            % Update property
+            obj.HorizontalAlignment = val;
         end
         
     end
