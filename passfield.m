@@ -29,7 +29,6 @@ classdef passfield < hgsetget
         UserData
         Value = 0
         Visible = 'on'
-
     end
     
     properties %(Access = private, Hidden = true)
@@ -69,6 +68,14 @@ classdef passfield < hgsetget
             peer.setBackground(newColor);
             % Update property
             obj.BackgroundColor = val;
+        end
+        
+        function set.Callback(obj,fcn)
+            % Update java peer
+            peer                         = get(obj, 'hjpeer');
+            peer.ActionPerformedCallback = @(src,event) obj.callbackBridge(src,event,fcn);
+            % Update property
+            obj.Callback = fcn;
         end
         
         function set.EchoChar(obj, val)
@@ -115,7 +122,7 @@ classdef passfield < hgsetget
         function set.KeyPressFcn(obj,fcn)
             % Update java peer
             peer                    = get(obj, 'hjpeer');
-            peer.KeyPressedCallback = @(src,event) obj.KeyPressFcnBridge(src,event,fcn);
+            peer.KeyPressedCallback = @(src,event) obj.keyPressFcnBridge(src,event,fcn);
             % Update property
             obj.KeyPressFcn = fcn;
         end
@@ -146,22 +153,39 @@ classdef passfield < hgsetget
     end
     
     methods (Access = private)
+        
+        function callbackBridge(obj, src, jevent, fcn)
+            % Bridge Java event into Matlab one
+            hgfeval(fcn, obj, jevent)
+        end
+        
+        function keyPressFcnBridge(obj, src, jevent, fcn)
+            % Bridge Java event into Matlab one
+            % TODO: create a proper private event.EventData and add event to this object
+            key = lower(char(jevent.getKeyText(jevent.getExtendedKeyCode)));
+            modifiers = lower(char(jevent.getModifiersExText(jevent.getModifiersEx)));
+            if isempty(modifiers),
+               modifiers = cell(1,0);
+            else
+               modifiers = regexp(modifiers,'+','split');
+            end
+            if jevent.isActionKey
+                keychar = '';
+            else
+                keychar = char(jevent.getKeyChar);
+            end
+            mevent = struct('Character', keychar,...
+                            'Modifier' , modifiers,...
+                            'Key'      , key,...
+                            'Source'   , obj,...
+                            'EventName', 'KeyPress');
+            hgfeval(fcn, obj, mevent)
+        end
+        
         function updatePassword(obj)
             % Listener's callback to updat the Password property from the Java peer
             pass         = obj.hjpeer.getPassword;
             obj.Password = reshape(pass,1,numel(pass));
-        end
-        
-        function KeyPressFcnBridge(obj, src, jevent, fcn)
-            % Bridge Java event into Matlab one
-            % TODO: create a proper private event.EventData and add event to this object
-            hjevent = handle(jevent,'callbackproperties');
-            mevent = struct('Character', ...
-                            'Modifier' , ...
-                            'Key'      , ...
-                            'Source'   , ...
-                            'EventName', 'KeyPressed');
-            hgfeval(fcn, obj, mevent)
         end
             
     end
