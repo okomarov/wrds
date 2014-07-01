@@ -56,6 +56,7 @@ classdef passfield < hgsetget
             [~, obj.hgcont] = javacomponent(obj.hjpeer);
 
             % Update default properties
+%             get(0,'DefaultUicontrolBackgroundcolor');
         end
         
 % =========================================================================
@@ -111,6 +112,14 @@ classdef passfield < hgsetget
             obj.HorizontalAlignment = val;
         end
         
+        function set.KeyPressFcn(obj,fcn)
+            % Update java peer
+            peer                    = get(obj, 'hjpeer');
+            peer.KeyPressedCallback = @(src,event) obj.KeyPressFcnBridge(src,event,fcn);
+            % Update property
+            obj.KeyPressFcn = fcn;
+        end
+        
         function set.Position(obj,val)
             % Update hg container 
             container          = get(obj,'hgcont');
@@ -138,8 +147,22 @@ classdef passfield < hgsetget
     
     methods (Access = private)
         function updatePassword(obj)
+            % Listener's callback to updat the Password property from the Java peer
             pass         = obj.hjpeer.getPassword;
             obj.Password = reshape(pass,1,numel(pass));
         end
+        
+        function KeyPressFcnBridge(obj, src, jevent, fcn)
+            % Bridge Java event into Matlab one
+            % TODO: create a proper private event.EventData and add event to this object
+            hjevent = handle(jevent,'callbackproperties');
+            mevent = struct('Character', ...
+                            'Modifier' , ...
+                            'Key'      , ...
+                            'Source'   , ...
+                            'EventName', 'KeyPressed');
+            hgfeval(fcn, obj, mevent)
+        end
+            
     end
 end
