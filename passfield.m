@@ -6,29 +6,28 @@ classdef passfield < hgsetget
         BusyAction = 'queue'
         ButtonDownFcn
         Callback
-        CreateFcn
-        DeleteFcn
         EchoChar = char(9679);
         Enable = 'on'
-        FontSize = 8
-        ForegroundColor = [0 0 0]
-        HandleVisibility = 'on'
+        FontSize
+        ForegroundColor
+        %        HandleVisibility = 'on'
         HitTest = 'on'
-        HorizontalAlignment = 'center'
+        HorizontalAlignment = 'left'
         Interruptible = 'on'
         KeyPressFcn
-        Parent
-        Password
+        Parent@handle
+        Password@string
         Position
         Selected = 'off'
-        Style = 'password'
-        Tag
-        TooltipString
-        UIContextMenu
+        Tag@string
+        TooltipString@string
+        UIContextMenu@matlab.ui.container.ContextMenu
         Units = 'pixels'
         UserData
-        Value = 0
         Visible = 'on'
+    end
+    properties (Constant)
+        Style = 'password'
     end
     
     properties %(Access = private, Hidden = true)
@@ -55,7 +54,8 @@ classdef passfield < hgsetget
             [~, obj.hgcont] = javacomponent(obj.hjpeer);
             
             % Update default properties
-            %             get(0,'DefaultUicontrolBackgroundcolor');
+            %get(0,'DefaultUicontrolBackgroundcolor');
+            %get(0,'DefaultUicontrolFontSize');
         end
         
         % =========================================================================
@@ -144,9 +144,6 @@ classdef passfield < hgsetget
         end
         
         function set.UIContextMenu(obj,val)
-            if ~ishghandle(val) || ~strcmpi(val.Type,'uicontextmenu')
-                error('passfield:printEchoChar','Not a context menu object.')
-            end
             % Update property
             obj.UIContextMenu = val;
             % Update java peer
@@ -202,6 +199,9 @@ classdef passfield < hgsetget
         end
         
         function showUIContextMenu(obj, src, evt)
+%         if ~ishghandle(val) || ~strcmpi(val.Type,'uicontextmenu')
+%             error('passfield:printEchoChar','Not a context menu object.')
+%         end
             if evt.getButton == 3
                 obj.UIContextMenu.Visible = 'on';
             end
