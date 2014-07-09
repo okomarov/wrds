@@ -1,4 +1,4 @@
-classdef passfield < hgsetget
+classdef passfield < matlab.System % hgsetget
     
     properties
         BackgroundColor
@@ -26,6 +26,11 @@ classdef passfield < hgsetget
         UserData
         Visible = 'on'
     end
+    properties (Hidden,Transient)
+        HorizontalAlignmentSet = matlab.system.StringSet({'left','center','right'});
+    end
+    
+    
     properties (Constant)
         Style = 'password'
     end
@@ -108,9 +113,9 @@ classdef passfield < hgsetget
         end
         
         function set.HorizontalAlignment(obj, val)
-            accepted = {'left','center','right'};
-            idx      = strncmpi(val, accepted, numel(val));
-            val      = accepted{idx};
+            %             accepted = {'left','center','right'};
+            %             idx      = strncmpi(val, accepted, numel(val));
+            %             val      = accepted{idx};
             % Update java peer
             peer                   = get(obj, 'hjpeer');
             newHorizontalAlignment = javax.swing.JTextField.(upper(val));
