@@ -37,11 +37,11 @@ classdef passfield < hgsetget
     end
     methods
         function obj = passfield(varargin)
-            % PASSFIELD Create a password field 
+            % PASSFIELD Create a password field
             
             % Create java peer
             obj.hjpeer = handle(javaObjectEDT('javax.swing.JPasswordField'), 'CallbackProperties');
-
+            
             % LISTENERS
             % -------------------------------------------------------------
             % Password (hjpeer -> obj)
@@ -53,14 +53,14 @@ classdef passfield < hgsetget
             
             % Embed into the graphic container
             [~, obj.hgcont] = javacomponent(obj.hjpeer);
-
+            
             % Update default properties
-%             get(0,'DefaultUicontrolBackgroundcolor');
+            %             get(0,'DefaultUicontrolBackgroundcolor');
         end
         
-% =========================================================================
-% SET 
-% =========================================================================
+        % =========================================================================
+        % SET
+        % =========================================================================
         function set.BackgroundColor(obj, val)
             % Update java peer
             peer     = get(obj, 'hjpeer');
@@ -122,13 +122,13 @@ classdef passfield < hgsetget
         function set.KeyPressFcn(obj,fcn)
             % Update java peer
             peer                    = get(obj, 'hjpeer');
-            peer.KeyPressedCallback = @(src,event) obj.keyPressFcnBridge(src,event,fcn);
+            peer.KeyPressedCallback = @(src,event) obj.callbackBridge(src,event,fcn);
             % Update property
             obj.KeyPressFcn = fcn;
         end
         
         function set.Position(obj,val)
-            % Update hg container 
+            % Update hg container
             container          = get(obj,'hgcont');
             container.Position = val;
             % Update property
@@ -144,7 +144,7 @@ classdef passfield < hgsetget
         end
         
         function set.Visible(obj,val)
-            % Update hg container 
+            % Update hg container
             container         = get(obj,'hgcont');
             container.Visible = val;
             % Update property
@@ -155,19 +155,28 @@ classdef passfield < hgsetget
     methods (Access = private)
         
         function callbackBridge(obj, src, jevent, fcn)
-            % Bridge Java event into Matlab one
-            hgfeval(fcn, obj, jevent)
+            % Java 2 matlab event conversion
+            switch char(jevent.getClass.getName)
+                case 'java.awt.event.KeyEvent'
+                    mevent = obj.j2m_KeyEvent(jevent);
+                case 'java.awt.event.ActionEvent'
+                    % fill in
+                    mevent = jevent;
+                otherwise
+                    mevent = jevent;
+            end
+            % Execute function associated with the callback
+            hgfeval(fcn, obj, mevent)
         end
         
-        function keyPressFcnBridge(obj, src, jevent, fcn)
-            % Bridge Java event into Matlab one
+        function mevent = j2m_KeyEvent(obj,jevent)
             % TODO: create a proper private event.EventData and add event to this object
             key = lower(char(jevent.getKeyText(jevent.getExtendedKeyCode)));
             modifiers = lower(char(jevent.getModifiersExText(jevent.getModifiersEx)));
             if isempty(modifiers),
-               modifiers = cell(1,0);
+                modifiers = cell(1,0);
             else
-               modifiers = regexp(modifiers,'+','split');
+                modifiers = regexp(modifiers,'+','split');
             end
             if jevent.isActionKey
                 keychar = '';
@@ -179,7 +188,7 @@ classdef passfield < hgsetget
                             'Key'      , key,...
                             'Source'   , obj,...
                             'EventName', 'KeyPress');
-            hgfeval(fcn, obj, mevent)
+        end
         end
         
         function updatePassword(obj)
