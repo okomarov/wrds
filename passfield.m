@@ -143,6 +143,17 @@ classdef passfield < hgsetget
             obj.TooltipString = val;
         end
         
+        function set.UIContextMenu(obj,val)
+            if ~ishghandle(val) || ~strcmpi(val.Type,'uicontextmenu')
+                error('passfield:printEchoChar','Not a context menu object.')
+            end
+            % Update property
+            obj.UIContextMenu = val;
+            % Update java peer
+            peer = get(obj, 'hjpeer');
+            peer.MouseClickedCallback = @(src,evt) obj.showUIContextMenu(src,evt);
+        end
+        
         function set.Visible(obj,val)
             % Update hg container
             container         = get(obj,'hgcont');
@@ -189,6 +200,11 @@ classdef passfield < hgsetget
                             'Source'   , obj,...
                             'EventName', 'KeyPress');
         end
+        
+        function showUIContextMenu(obj, src, evt)
+            if evt.getButton == 3
+                obj.UIContextMenu.Visible = 'on';
+            end
         end
         
         function updatePassword(obj)
@@ -196,6 +212,6 @@ classdef passfield < hgsetget
             pass         = obj.hjpeer.getPassword;
             obj.Password = reshape(pass,1,numel(pass));
         end
-            
+        
     end
 end
