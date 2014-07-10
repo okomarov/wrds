@@ -1,26 +1,26 @@
-classdef passfield < matlab.System % hgsetget
+classdef passfield < matlab.System
     
     properties
         BackgroundColor
-        BeingDeleted = 'off'
         BusyAction = 'queue'
-        ButtonDownFcn
+%         ButtonDownFcn
         Callback
         EchoChar = char(9679);
-        Enable = 'on'
+%         Enable = 'on'
+%         FontName
         FontSize
         ForegroundColor
         %        HandleVisibility = 'on'
-        HitTest = 'on'
+%         HitTest = 'on'
         HorizontalAlignment = 'left'
-        Interruptible = 'on'
+%         Interruptible = 'on'
         KeyPressFcn
         Parent@handle
-        Password@string
+        Password@char
         Position
-        Selected = 'off'
-        Tag@string
-        TooltipString@string
+%         Selected = 'off'
+        Tag@char
+        TooltipString@char
         UIContextMenu@matlab.ui.container.ContextMenu
         Units = 'pixels'
         UserData
@@ -34,41 +34,53 @@ classdef passfield < matlab.System % hgsetget
     properties (Hidden,Transient)
         HorizontalAlignmentSet = matlab.system.StringSet({'left','center','right'});
     end
-    
-    
+
     properties (Constant)
         Style = 'password'
     end
     
-    properties %(Access = private, Hidden = true)
+    properties %(Access = private,Hidden)
         hjpeer
         hgcont
     end
+    
     methods
         function obj = passfield(varargin)
             % PASSFIELD Create a password field
-            
+           
             % Create java peer
             obj.hjpeer = handle(javaObjectEDT('javax.swing.JPasswordField'), 'CallbackProperties');
             
-            % LISTENERS
-            % -------------------------------------------------------------
-            % Password (hjpeer -> obj)
-            % Propagate destructor of the container to the obj
+            % Get parent
+            pos = find(~cellfun('isempty',strfind(varargin(1:2:end), 'Parent')));
+            if isempty(pos)
+                parent = gcf;
+            else
+                parent = varargin{pos+1};
+            end
+            
+            % Embed into the graphic container
+            [~, obj.hgcont] = javacomponent(obj.hjpeer,[],parent);
+            
+            % Destructor listener (hjcont -> obj)
             addlistener(obj.hgcont,'ObjectBeingDestroyed',@(src,evt) obj.delete);
+            
+            % Password listener (hjpeer -> obj)
             hdoc    = handle(obj.hjpeer.getDocument);
             lstfun  = @(hdoc,evt) obj.updatePassword();
             hlst(1) = handle.listener(hdoc,'insertUpdate',lstfun);
             hlst(2) = handle.listener(hdoc,'removeUpdate',lstfun);
             setappdata(obj.hjpeer,'PasswordListener',hlst);
             
-            % Embed into the graphic container
-            [~, obj.hgcont] = javacomponent(obj.hjpeer);
-            
-            % Update default properties
-            %get(0,'DefaultUicontrolBackgroundcolor');
-            %get(0,'DefaultUicontrolFontSize');
+            % Retrieve default properties
+            default  = {'BackgroundColor','FontSize','ForegroundColor'};
+            idx      = ismember(default,varargin(1:2:end));
+            nameval  = [default(~idx), get(0, strcat('DefaultUicontrol', default(~idx)))];
+ 
+            % Set name/value pairs
+            setProperties(obj,nargin,varargin{:},nameval{:});
         end
+        
         function delete(obj)
             obj.BeingDeleted = 'on';
             if ishghandle(obj.hgcont) 
@@ -78,7 +90,6 @@ classdef passfield < matlab.System % hgsetget
         end
             
        
-        
         % =========================================================================
         % SET
         % =========================================================================
@@ -197,7 +208,7 @@ classdef passfield < matlab.System % hgsetget
             % Execute function associated with the callback
             hgfeval(fcn, obj, mevent)
         end
-        
+
         function mevent = j2m_KeyEvent(obj,jevent)
             % TODO: create a proper private event.EventData and add event to this object
             key = lower(char(jevent.getKeyText(jevent.getExtendedKeyCode)));
