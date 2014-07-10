@@ -26,6 +26,11 @@ classdef passfield < matlab.System % hgsetget
         UserData
         Visible = 'on'
     end
+    
+    properties(SetAccess=private)
+        BeingDeleted = 'off'
+    end
+    
     properties (Hidden,Transient)
         HorizontalAlignmentSet = matlab.system.StringSet({'left','center','right'});
     end
@@ -49,6 +54,8 @@ classdef passfield < matlab.System % hgsetget
             % LISTENERS
             % -------------------------------------------------------------
             % Password (hjpeer -> obj)
+            % Propagate destructor of the container to the obj
+            addlistener(obj.hgcont,'ObjectBeingDestroyed',@(src,evt) obj.delete);
             hdoc    = handle(obj.hjpeer.getDocument);
             lstfun  = @(hdoc,evt) obj.updatePassword();
             hlst(1) = handle.listener(hdoc,'insertUpdate',lstfun);
@@ -62,6 +69,15 @@ classdef passfield < matlab.System % hgsetget
             %get(0,'DefaultUicontrolBackgroundcolor');
             %get(0,'DefaultUicontrolFontSize');
         end
+        function delete(obj)
+            obj.BeingDeleted = 'on';
+            if ishghandle(obj.hgcont) 
+               delete(obj.hgcont)
+            end
+            delete@matlab.System(obj)
+        end
+            
+       
         
         % =========================================================================
         % SET
