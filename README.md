@@ -1,7 +1,7 @@
 ##### Description
 Create masked edit box for password input
 
-![password field](https://raw.githubusercontent.com/okomarov/passfield/master/Example.png)
+![password field](https://raw.githubusercontent.com/okomarov/passfield/master/Example.PNG)
 
 ##### Syntax
     passfield(Name, Value) Supports Name/Value pair syntax as in
