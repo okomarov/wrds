@@ -19,7 +19,7 @@ classdef passfield < hgsetget
 %   Use at your own risk!
 %
 % Additional features:
-%   - <a href="matlab: web('','-browser')">Submit issues to the Github repo</a>
+%   - <a href="matlab: web('https://github.com/okomarov/passfield/issues','-browser')">Submit/check issues on Github</a>
 %   - <a href="matlab: web('http://undocumentedmatlab.com/','-browser')">Undocumented Matlab</a>
 % 
 % See also: UICONTROL, JAVACOMPONENT
