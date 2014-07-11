@@ -1,5 +1,4 @@
-classdef passfield < matlab.System
-    
+classdef passfield < hgsetget
 % DISCLAIMER this is an alpha version
 % ===================================
 %
@@ -57,17 +56,12 @@ classdef passfield < matlab.System
     
     properties(Hidden,SetAccess=private)
         Parent@handle                                       
-    properties(SetAccess=private)
-        BeingDeleted = 'off'
     end
     
     properties(SetAccess=private)
         BeingDeleted = 'off'                                % Indicator that MATLAB is deleting the field
-    properties (Hidden,Transient)
-        HorizontalAlignmentSet = matlab.system.StringSet({'left','center','right'});
     end
     
-
     properties (Constant)
         Style = 'password'                                  % Style of the uicontrol
     end
@@ -112,15 +106,18 @@ classdef passfield < matlab.System
             varargin = [varargin, nameval(:)'];
  
             % Set name/value pairs
-            setProperties(obj,nargin,varargin{:},nameval{:});
+            for ii = 1:2:numel(varargin)
+                set(obj,varargin{ii}, varargin{ii+1});
+            end
         end
         
+        % Top to bottom delete
         function delete(obj)
             obj.BeingDeleted = 'on';
             if ishghandle(obj.hgcont) 
                delete(obj.hgcont)
             end
-            delete@matlab.System(obj)
+            delete@hgsetget(obj)
         end
             
        
@@ -174,9 +171,9 @@ classdef passfield < matlab.System
         end
         
         function set.HorizontalAlignment(obj, val)
-            %             accepted = {'left','center','right'};
-            %             idx      = strncmpi(val, accepted, numel(val));
-            %             val      = accepted{idx};
+            accepted = {'left','center','right'};
+            idx      = strncmpi(val, accepted, numel(val));
+            val      = accepted{idx};
             % Update java peer
             peer                   = get(obj, 'hjpeer');
             newHorizontalAlignment = javax.swing.JTextField.(upper(val));
@@ -268,9 +265,6 @@ classdef passfield < matlab.System
         end
         
         function showUIContextMenu(obj, src, evt)
-%         if ~ishghandle(val) || ~strcmpi(val.Type,'uicontextmenu')
-%             error('passfield:printEchoChar','Not a context menu object.')
-%         end
             if evt.getButton == 3
                 obj.UIContextMenu.Visible = 'on';
             end
@@ -282,5 +276,13 @@ classdef passfield < matlab.System
             obj.Password = reshape(pass,1,numel(pass));
         end
         
+    end
+    
+    % Hide superclass methods
+    methods (Hidden)
+        function ge(~),  end
+        function gt(~),  end
+        function le(~),  end
+        function lt(~),  end
     end
 end
