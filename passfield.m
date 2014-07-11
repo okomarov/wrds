@@ -108,7 +108,8 @@ classdef passfield < matlab.System
             % Retrieve default properties
             default  = {'BackgroundColor','FontSize','ForegroundColor'};
             idx      = ismember(default,varargin(1:2:end));
-            nameval  = [default(~idx), get(0, strcat('DefaultUicontrol', default(~idx)))];
+            nameval  = [default(~idx); get(0, strcat('DefaultUicontrol', default(~idx)))];
+            varargin = [varargin, nameval(:)'];
  
             % Set name/value pairs
             setProperties(obj,nargin,varargin{:},nameval{:});
@@ -224,7 +225,10 @@ classdef passfield < matlab.System
             obj.Visible = val;
         end
     end
-    
+
+% =========================================================================
+% PRIVATE
+% =========================================================================
     methods (Access = private)
         
         function callbackBridge(obj, src, jevent, fcn)
@@ -233,7 +237,7 @@ classdef passfield < matlab.System
                 case 'java.awt.event.KeyEvent'
                     mevent = obj.j2m_KeyEvent(jevent);
                 case 'java.awt.event.ActionEvent'
-                    % fill in
+                    % TO DO: Action event bridge
                     mevent = jevent;
                 otherwise
                     mevent = jevent;
@@ -257,10 +261,10 @@ classdef passfield < matlab.System
                 keychar = char(jevent.getKeyChar);
             end
             mevent = struct('Character', keychar,...
+                            'Modifier' , {modifiers},...
                             'Key'      , key,...
                             'Source'   , obj,...
                             'EventName', 'KeyPress');
-            mevent.Modifier = modifiers; % Bug in matlab, need to add separatly if empty cell
         end
         
         function showUIContextMenu(obj, src, evt)
