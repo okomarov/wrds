@@ -1,52 +1,85 @@
 classdef passfield < matlab.System
     
+% DISCLAIMER this is an alpha version
+% ===================================
+%
+% PASSFIELD Create a password field
+%
+%   PASSFIELD(Name, Value) Supports Name/Value pair syntax as in
+%                          uicontrol(). 
+%                          For valid properties refer to the 
+%                          <a href="matlab: doc uicontrol-properties">Uicontrol Properties</a>.
+%   
+%   Additional properties:
+%       'EchoChar'  -   character displayed in field
+%       'Password'  -   plain text string of the password
+% 
+% 
+% Warning: 
+%   This code heavily relies on undocumented and unsupported Matlab functionality.
+%   Use at your own risk!
+%
+% Additional features:
+%   - <a href="matlab: web('','-browser')">Submit issues to the Github repo</a>
+%   - <a href="matlab: web('http://undocumentedmatlab.com/','-browser')">Undocumented Matlab</a>
+% 
+% See also: UICONTROL, JAVACOMPONENT
+
+% Author: Oleg Komarov (oleg.komarov@hotmail.it) 
+% Tested on R2014a Win7 64bit
+% 2014 Jul 07 - created
+            
     properties
-        BackgroundColor
-        BusyAction = 'queue'
+        BackgroundColor                                     % Background color as RGB triplet
+%         BusyAction = 'queue'
 %         ButtonDownFcn
-        Callback
-        EchoChar = char(9679);
+        Callback                                            % Perform on action    
+        EchoChar = char(9679);                              % Character displayed in the field
 %         Enable = 'on'
 %         FontName
-        FontSize
-        ForegroundColor
-        %        HandleVisibility = 'on'
+        FontSize                                            % Font size for displaying string
+        ForegroundColor                                     % Text Color
+%         HandleVisibility = 'on'
 %         HitTest = 'on'
-        HorizontalAlignment = 'left'
+        HorizontalAlignment = 'left'                        % Alignment for password string
 %         Interruptible = 'on'
-        KeyPressFcn
-        Parent@handle
-        Password@char
-        Position
+        KeyPressFcn                                         % Key press callback function
+        Password@char                                       % Password string in plain text
+        Position                                            % Size and location of the password field
 %         Selected = 'off'
-        Tag@char
-        TooltipString@char
-        UIContextMenu@matlab.ui.container.ContextMenu
-        Units = 'pixels'
-        UserData
-        Visible = 'on'
+        Tag@char                                            % Identifier
+        TooltipString@char                                  % Tooltip text
+        UIContextMenu@matlab.ui.container.ContextMenu       % Context menu associated with the field
+        Units = 'pixels'                                    % Units of measurement
+        UserData                                            % Data associated with the field
+        Visible = 'on'                                      % Visibility of the field
     end
     
+    properties(Hidden,SetAccess=private)
+        Parent@handle                                       
     properties(SetAccess=private)
         BeingDeleted = 'off'
     end
     
+    properties(SetAccess=private)
+        BeingDeleted = 'off'                                % Indicator that MATLAB is deleting the field
     properties (Hidden,Transient)
         HorizontalAlignmentSet = matlab.system.StringSet({'left','center','right'});
     end
+    
 
     properties (Constant)
-        Style = 'password'
+        Style = 'password'                                  % Style of the uicontrol
     end
     
-    properties %(Access = private,Hidden)
+    properties (Access = private,Hidden)
         hjpeer
         hgcont
     end
     
     methods
         function obj = passfield(varargin)
-            % PASSFIELD Create a password field
+            % Constructor
            
             % Create java peer
             obj.hjpeer = handle(javaObjectEDT('javax.swing.JPasswordField'), 'CallbackProperties');
