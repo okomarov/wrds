@@ -41,6 +41,7 @@ classdef passfield < hgsetget
 %         HandleVisibility = 'on'
 %         HitTest = 'on'
         HorizontalAlignment = 'left'                        % Alignment for password string
+        IsMasked = true;                                    % Password is masked with EchoChar
 %         Interruptible = 'on'
         KeyPressFcn                                         % Key press callback function
         Password@char                                       % Password string in plain text
@@ -120,7 +121,25 @@ classdef passfield < hgsetget
             delete@hgsetget(obj)
         end
             
-       
+        % Hide password
+        function hide(obj)
+            if ~obj.IsMasked
+               obj.EchoChar = obj.EchoChar;
+               obj.IsMasked = true;
+            end
+        end 
+        
+        % Show password
+        function show(obj)
+            if obj.IsMasked
+                val = char(0);
+                % Update java peer only
+                peer = get(obj, 'hjpeer');
+                peer.setEchoChar(val);
+                obj.IsMasked = false; 
+            end
+        end 
+        
         % =========================================================================
         % SET
         % =========================================================================
