@@ -2,7 +2,7 @@ function passdlg(uitype)
 
 % Parse UI type
 [hasUsernameField, hasConfirmPassword, hasShowCheckBox] = getUItype(uitype);
-offset = (hasUsernameField + hasConfirmPassword)*50 + hasShowCheckBox*30;
+offset = (hasUsernameField + hasConfirmPassword)*40 + hasShowCheckBox*30 + ~hasShowCheckBox*10;
 
 % Figure
 fh = figure('DockControls'  , 'off',...
@@ -33,9 +33,9 @@ if hasUsernameField
         'Position'   ,[5 59.6 + offset], ...
         'String'     ,'Username'  , ...
         'Interpreter','none');
+    offset = offset - 40;
 end
 
-offset = offset - hasUsernameField*50;
 % Password field
 h.editpass = passfield('Parent',fh,...
     'Position'       , [5, 36.6 + offset, 165, 23],...
@@ -49,7 +49,7 @@ h.labelpass = text('Parent',ah, ...
 
 % Confirm password
 if hasConfirmPassword
-    offset = offset - 50;
+    offset = offset - 40;
     h.editpassconf = passfield('Parent',fh,...
         'Position'       , [5, 36.6 + offset, 165, 23],...
         'BackgroundColor', [1,1,1]);
@@ -62,7 +62,7 @@ end
 
 % Show/hide password checkbox
 if hasShowCheckBox
-    offset = offset - 30;
+    offset = offset - 28;
     h.cbshow = uicontrol(fh, ...
         defaults.CbInfo,...
         'Position',[5, 36.6 + offset, 165, 23],...
