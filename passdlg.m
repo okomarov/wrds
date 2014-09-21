@@ -1,4 +1,36 @@
 function answer = passdlg(uitype)
+% PASSDLG Create and open password dialog box
+%   
+%   PASSDLG(UITYPE) Supports several types of dialogs. It will 
+%                   always produce one masked password field and
+%                   can add the following optional components:
+%                       - Username field
+%                       - Password confirmation field
+%                       - Show/hide password checkbox
+%
+%                   UITYPE can be a cell array combining 'UsernameField', 
+%                   'ConfirmPass' and 'ShowHideCheckBox', or a char string
+%                   with the initial letters 'u', 'c' and 's', e.g. 'cs'.
+% 
+%
+%   ANSWER = ... 
+%       Returns a structure with cellstring fields (by default {''})
+%       .User
+%       .Pass 
+%              
+%   NOTE: pressing the button Cancel, Esc or closing the figure will
+%   return empty fields.
+%
+%   
+% Examples:
+%   % Simple password dialog
+%   out = passdlg();
+%
+%   % Add username and password confirmation field
+%   out = passdlg('uc');  % or passdlg({'UsernameField','ConfirmPass'})
+%
+% See also: PASSFIELD, INPUTDLG
+
 if nargin < 1, uitype = ''; end
 
 % Parse UI type
