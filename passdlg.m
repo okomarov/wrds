@@ -1,4 +1,5 @@
 function passdlg(uitype)
+if nargin < 1, uitype = ''; end
 
 % Parse UI type
 [hasUsernameField, hasConfirmPassword, hasShowCheckBox] = getUItype(uitype);
@@ -95,6 +96,7 @@ movegui(fh,'center')
 
 end
 
+% Parse arguments to main function
 function [u, c, s] = getUItype(type)
 ucs = false(3,1);
 if iscellstr(type)
@@ -110,7 +112,7 @@ if iscellstr(type)
         if all(ucs), break, end
     end
 elseif ischar(type) && isrow(type)
-    ucs = any(bsxfun(@eq, 'ucs',type'));
+    ucs = any(bsxfun(@eq, 'ucs',type'),1);
 end
 u = ucs(1);
 c = ucs(2);
