@@ -1,4 +1,4 @@
-function passdlg(uitype)
+function answer = passdlg(uitype)
 if nargin < 1, uitype = ''; end
 
 % Parse UI type
@@ -9,9 +9,11 @@ offset = (hasUsernameField + hasConfirmPassword)*40 + hasShowCheckBox*30 + ~hasS
 fh = figure('DockControls'  , 'off',...
     'IntegerHandle' , 'off',...
     'InvertHardcopy', 'off',...
+    'KeyPressFcn'   , @kpf_figure, ...
     'MenuBar'       , 'none',...
     'NumberTitle'   , 'off',...
     'Resize'        , 'on',...
+    'UserData'      , 'Cancel',...
     'Visible'       , 'on',...
     'WindowStyle'   , 'normal',...
     'Name'          , 'Password',...
@@ -80,20 +82,20 @@ if hasShowCheckBox
 end
 
 % OK button
-h.btnok = uicontrol(fh,...
-  defaults.BtnInfo      , ...
-  'Position'   ,[59, 5, 53, 26.6] , ...
-  'KeyPressFcn',@doControlKeyPress , ...
-  'String'     ,'OK',...
-  'Callback'   ,@doCallback);
+h.button(1) = uicontrol(fh,...
+    defaults.BtnInfo      , ...
+    'Position'   ,[59, 5, 53, 26.6] , ...
+    'KeyPressFcn',@kpf_button, ...
+    'String'     ,'OK',...
+    'Callback'   ,@clb_button);
 
 % Cancel button
-h.btncancel = uicontrol(fh,...
-  defaults.BtnInfo      , ...
-  'Position'   ,[117 5 53 26.6],...
-  'KeyPressFcn',@doControlKeyPress,...
-  'String'     ,'Cancel',...
-  'Callback'   ,@doCallback);
+h.button(2) = uicontrol(fh,...
+    defaults.BtnInfo      , ...
+    'Position'   ,[117 5 53 26.6],...
+    'KeyPressFcn',@kpf_button,...
+    'String'     ,'Cancel',...
+    'Callback'   ,@clb_button);
 
 fh.setDefaultButton(h.btnok);
 
@@ -102,6 +104,55 @@ set(fh,'ResizeFcn', {@doResize, h});
 
 % make sure we are on screen
 movegui(fh,'center')
+if ishghandle(fh), uiwait(fh); end
+
+if ishghandle(fh)
+    answer = {};
+    if strcmp(get(fh,'UserData'),'OK'),
+        if hasUsernameField
+            answer = [get(h.edit{1},{'String'}); 
+                      get(h.edit{2},{'Password'})];
+        else
+            answer = get(h.edit{1},{'Password'});
+        end
+    end
+    delete(fh);
+else
+    answer = {};
+end
+end
+
+function kpf_figure(obj, evd)
+switch(evd.Key)
+    case {'return','space'}
+        uiresume(gcbf);
+    case {'escape'}
+        delete(gcbf);
+end
+end
+
+function kpf_button(obj, evd)
+switch(evd.Key)
+    case {'return'}
+        if ~strcmp(get(obj,'UserData'),'Cancel')
+            set(gcbf,'UserData','OK');
+            uiresume(gcbf);
+        else
+            delete(gcbf)
+        end
+    case 'escape'
+        delete(gcbf)
+end
+end
+
+function clb_button(obj, evd) 
+if ~strcmp(get(obj,'UserData'),'Cancel')
+    set(gcbf,'UserData','OK');
+    uiresume(gcbf);
+else
+    delete(gcbf)
+end
+end
 % Horizontal resize
 function doResize(fh, evd, varargin) 
 Data      = varargin{1};
