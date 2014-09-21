@@ -35,7 +35,7 @@ classdef passfield < hgsetget
         Callback                                            % Perform on action    
         EchoChar = char(9679);                              % Character displayed in the field
 %         Enable = 'on'
-%         FontName
+        FontName                                            % Font name for displaying string (affects size)
         FontSize                                            % Font size for displaying string
         ForegroundColor                                     % Text Color
 %         HandleVisibility = 'on'
@@ -102,11 +102,11 @@ classdef passfield < hgsetget
             setappdata(obj.hjpeer,'PasswordListener',hlst);
             
             % Retrieve default properties
-            default  = {'BackgroundColor','FontSize','ForegroundColor'};
+            default  = {'BackgroundColor','FontSize','FontName','ForegroundColor'};
             idx      = ismember(default,varargin(1:2:end));
             nameval  = [default(~idx); get(0, strcat('DefaultUicontrol', default(~idx)))];
             varargin = [varargin, nameval(:)'];
- 
+            
             % Set name/value pairs
             for ii = 1:2:numel(varargin)
                 set(obj,varargin{ii}, varargin{ii+1});
@@ -170,6 +170,16 @@ classdef passfield < hgsetget
             peer.setEchoChar(val);
             % Update property
             obj.EchoChar = val;
+        end
+        
+        function set.FontName(obj, val)
+            fontsize = get(obj, 'FontSize');
+            % Update java peer
+            peer    = get(obj, 'hjpeer');
+            newFont = java.awt.Font(val, 0, fontsize);
+            peer.setFont(newFont);
+            % Update property
+            obj.FontName = val;
         end
         
         function set.FontSize(obj, val)
