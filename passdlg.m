@@ -110,21 +110,21 @@ movegui(fh,'center')
 set(fh,'Visible','on');
 drawnow
 
+% Go into uiwait/modal
 if ishghandle(fh), uiwait(fh); end
 
+% Parse outputs
 if ishghandle(fh)
-    answer = {};
+    [answer.User, answer.Pass] = deal({''});
     if strcmp(get(fh,'UserData'),'OK'),
         if hasUsernameField
-            answer = [get(h.edit{1},{'String'}); 
-                      get(h.edit{2},{'Password'})];
-        else
-            answer = get(h.edit{1},{'Password'});
+            answer.User = get(h.edit{1},{'String'}); 
         end
+        answer.Pass = get(h.edit{end},{'Password'});
     end
     delete(fh);
 else
-    answer = {};
+    [answer.User, answer.Pass] = deal({''});
 end
 end
 
