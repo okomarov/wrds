@@ -31,6 +31,10 @@ function answer = passdlg(uitype)
 %
 % See also: PASSFIELD, INPUTDLG
 
+% Author: Oleg Komarov (oleg.komarov@hotmail.it) 
+% Tested on R2014a Win7 64bit
+% 2014 Sep 21 - Created
+
 if nargin < 1, uitype = ''; end
 
 % Parse UI type

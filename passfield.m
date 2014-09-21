@@ -1,7 +1,4 @@
 classdef passfield < hgsetget
-% DISCLAIMER this is an alpha version
-% ===================================
-%
 % PASSFIELD Create a password field
 %
 %   PASSFIELD(Name, Value) Supports Name/Value pair syntax as in
@@ -22,11 +19,12 @@ classdef passfield < hgsetget
 %   - <a href="matlab: web('https://github.com/okomarov/passfield/issues','-browser')">Submit/check issues on Github</a>
 %   - <a href="matlab: web('http://undocumentedmatlab.com/','-browser')">Undocumented Matlab</a>
 % 
-% See also: UICONTROL, JAVACOMPONENT
+% See also: PASSDLG, UICONTROL, JAVACOMPONENT
 
 % Author: Oleg Komarov (oleg.komarov@hotmail.it) 
 % Tested on R2014a Win7 64bit
 % 2014 Jul 07 - created
+% 2014 Sep 21 - added FontName property
             
     properties
         BackgroundColor                                     % Background color as RGB triplet
