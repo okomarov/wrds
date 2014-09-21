@@ -56,7 +56,7 @@ classdef passfield < hgsetget
     end
     
     properties(Hidden,SetAccess=private)
-        Parent@handle                                       
+        Parent
     end
     
     properties(SetAccess=private)
@@ -89,6 +89,7 @@ classdef passfield < hgsetget
             
             % Embed into the graphic container
             [~, obj.hgcont] = javacomponent(obj.hjpeer,[],parent);
+            obj.hgcont      = handle(obj.hgcont); 
             
             % Destructor listener (hjcont -> obj)
             addlistener(obj.hgcont,'ObjectBeingDestroyed',@(src,evt) obj.delete);
