@@ -78,7 +78,7 @@ if hasShowCheckBox
         defaults.CbInfo,...
         'Position',[5, 36.6 + offset, 165, 23],...
         'String'  , 'Show password',...
-        'Callback', {@clb_showpass,h});
+        'Callback', {@clb_checkbox,h});
 end
 
 % OK button
@@ -153,6 +153,21 @@ else
     delete(gcbf)
 end
 end
+
+% Show/hide password
+function clb_checkbox(obj,evd,varargin)
+Data = varargin{1};
+if get(obj,'Value')
+    for ii = 2:numel(Data.edit)
+        Data.edit{ii}.show;
+    end
+else
+    for ii = 2:numel(Data.edit)
+        Data.edit{ii}.hide;
+    end
+end
+end
+
 % Horizontal resize
 function doResize(fh, evd, varargin) 
 Data      = varargin{1};
