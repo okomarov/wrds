@@ -11,21 +11,29 @@ fh = figure('DockControls'  , 'off',...
     'InvertHardcopy', 'off',...
     'MenuBar'       , 'none',...
     'NumberTitle'   , 'off',...
-    'Resize'        , 'off',...
+    'Resize'        , 'on',...
     'Visible'       , 'on',...
     'WindowStyle'   , 'normal',...
     'Name'          , 'Password',...
     'Position'      , [0, 0, 175 83.6 + offset]);
 
+% Params for resize 
+h.FigMinWidth     = 175;
+h.FigHeight       = 83.6 + offset;
+h.OkFromRight     = h.FigMinWidth - 59;
+h.CancelFromRight = h.FigMinWidth - 117;
 % Axes (for text labels)
 ah = axes('Parent',fh,'Position',[0 0 1 1],'Visible','off');
 
 % Get some default properties
 defaults = getDefaults;
 
+% Preallocate edit handles
+h.edit = {};
+
 % Username field and label
 if hasUsernameField
-    h.edituser = uicontrol(fh, ...
+    h.edit{end+1} = uicontrol(fh, ...
         defaults.EdInfo      , ...
         'Max'       ,1, ...
         'Position'  ,[5, 36.6 + offset, 165, 23]);
@@ -38,7 +46,7 @@ if hasUsernameField
 end
 
 % Password field
-h.editpass = passfield('Parent',fh,...
+h.edit{end+1} = passfield('Parent',fh,...
     'Position'       , [5, 36.6 + offset, 165, 23],...
     'BackgroundColor', [1,1,1]);
 % Password label
@@ -51,7 +59,7 @@ h.labelpass = text('Parent',ah, ...
 % Confirm password
 if hasConfirmPassword
     offset = offset - 40;
-    h.editpassconf = passfield('Parent',fh,...
+    h.edit{end+1} = passfield('Parent',fh,...
         'Position'       , [5, 36.6 + offset, 165, 23],...
         'BackgroundColor', [1,1,1]);
     h.labelpassconf = text('Parent',ah, ...
@@ -89,11 +97,51 @@ h.btncancel = uicontrol(fh,...
 
 fh.setDefaultButton(h.btnok);
 
-% set(InputFig,'ResizeFcn', {@doResize, inputWidthSpecified});
+% Add resize function
+set(fh,'ResizeFcn', {@doResize, h});
 
 % make sure we are on screen
 movegui(fh,'center')
+% Horizontal resize
+function doResize(fh, evd, varargin) 
+Data      = varargin{1};
+resetPos  = false;
 
+FigPos    = get(fh,'Position');
+FigWidth  = FigPos(3);
+FigHeight = FigPos(4);
+
+% Keep min width
+widthDiff = Data.FigMinWidth - FigWidth;
+if widthDiff >= 1
+    FigWidth  = Data.FigMinWidth;
+    FigPos(3) = Data.FigMinWidth;
+    resetPos = true;
+end
+
+% Resize edit fields
+for ii = 1:length(Data.edit)
+    EditPos    = get(Data.edit{ii},'Position');
+    EditPos(3) = FigWidth - 10;
+    set(Data.edit{ii},'Position',EditPos);
+end
+
+% Reposition buttons
+ButtonPos    = get(Data.button(1),'Position');
+ButtonPos(1) = FigWidth - Data.OkFromRight;
+set(Data.button(1),'Position',ButtonPos);
+ButtonPos    = get(Data.button(2),'Position');
+ButtonPos(1) = FigWidth - Data.CancelFromRight;
+set(Data.button(2),'Position',ButtonPos);
+
+% Keep height fixed
+heightDiff = abs(FigHeight - Data.FigHeight);
+if heightDiff >= 1
+    FigPos(4) = Data.FigHeight;
+    resetPos  = true;
+end
+
+if resetPos, set(fh,'Position',FigPos); end
 end
 
 % Parse arguments to main function
