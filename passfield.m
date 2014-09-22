@@ -25,6 +25,7 @@ classdef passfield < hgsetget
             
     properties
         BackgroundColor                                     % Background color as short/long name or RGB triplet
+        BorderColor = [171,173,179]                         % Border color as short/long name or RGB triplet
 %         BusyAction = 'queue'
 %         ButtonDownFcn
         Callback                                            % Perform on action    
@@ -147,6 +148,17 @@ classdef passfield < hgsetget
             peer.setBackground(newColor);
             % Update property
             obj.BackgroundColor = val;
+        end
+        
+        function set.BorderColor(obj, val)
+            if ischar(val), val = cname2rgb(val); end
+            % Update java peer
+            peer      = get(obj, 'hjpeer');
+            newColor  = java.awt.Color(val(1),val(2),val(3));
+            newBorder = javax.swing.BorderFactory.createLineBorder(newColor);
+            peer.setBorder(newBorder);
+            % Update property
+            obj.BorderColor = val;
         end
         
         function set.Callback(obj,fcn)
