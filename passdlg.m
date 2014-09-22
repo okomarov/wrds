@@ -138,6 +138,11 @@ h.button(2) = uicontrol(fh,...
 
 % fh.setDefaultButton(h.btnok);
 
+% Add password check on confirmation field
+if hasConfirmPassword
+   set(h.edit{end}, 'KeyPressFcn', {@kpf_confirmpass,h})
+end
+
 % Add resize function
 set(fh,'ResizeFcn', {@doResize, h});
 
@@ -184,6 +189,24 @@ switch(evd.Key)
         end
     case 'escape'
         delete(gcbf)
+end
+end
+
+function kpf_confirmpass(obj,evd,varargin)
+Data     = varargin{1};
+passedit = Data.edit{end-1};
+if numel(obj.Password) >= numel(passedit.Password) || all(obj.BorderColor == [0 1 0])
+    if strcmp(obj.Password, passedit.Password)
+        green                = [0 1 0];
+        obj.BorderColor      = green;
+        passedit.BorderColor = green;
+        set(Data.button(1), 'Enable','on');
+    else
+        red                  = [1 0 0];
+        obj.BorderColor      = red;
+        passedit.BorderColor = red;
+        set(Data.button(1), 'Enable','off');
+    end
 end
 end
 
