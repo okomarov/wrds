@@ -3,14 +3,11 @@ classdef passfield < hgsetget
 %
 %   PASSFIELD(Name, Value) Supports Name/Value pair syntax as in
 %                          uicontrol(). 
-%                          For valid properties refer to the 
-%                          <a href="matlab: doc uicontrol-properties">Uicontrol Properties</a>.
-%   
-%   Additional properties:
-%       'EchoChar'  -   character displayed in field
-%       'Password'  -   plain text string of the password
-% 
-% 
+%                          Valid names of properties are:
+%                           * 'EchoChar'  -  character masking the password
+%                           * 'Password'  -  password in plain text
+%                           * Some <a href="matlab: doc uicontrol-properties">uicontrol properties</a>
+%  
 % Warning: 
 %   This code heavily relies on undocumented and unsupported Matlab functionality.
 %   Use at your own risk!
