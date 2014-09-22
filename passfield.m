@@ -66,6 +66,7 @@ classdef passfield < hgsetget
     properties (Access = private,Hidden)
         hjpeer
         hgcont
+        jFontSize
     end
     
     methods
@@ -188,7 +189,7 @@ classdef passfield < hgsetget
         end
         
         function set.FontName(obj, val)
-            fontsize = get(obj, 'FontSize');
+            fontsize = get(obj, 'jFontSize');
             % Update java peer
             peer    = get(obj, 'hjpeer');
             newFont = java.awt.Font(val, 0, fontsize);
@@ -198,9 +199,12 @@ classdef passfield < hgsetget
         end
         
         function set.FontSize(obj, val)
+            % Set jFontSize
+            fontsize = com.mathworks.mwswing.FontSize.createFromPointSize(val).getJavaSize;
+            set(obj,'jFontSize',fontsize);
             % Update java peer
             peer    = get(obj, 'hjpeer');
-            newFont = peer.getFont.deriveFont(val);
+            newFont = peer.getFont.deriveFont(fontsize);
             peer.setFont(newFont);
             % Update property
             obj.FontSize = val;
