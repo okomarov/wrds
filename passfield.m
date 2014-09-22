@@ -24,7 +24,7 @@ classdef passfield < hgsetget
 % 2014 Sep 21 - added FontName property
             
     properties
-        BackgroundColor                                     % Background color as RGB triplet
+        BackgroundColor                                     % Background color as short/long name or RGB triplet
 %         BusyAction = 'queue'
 %         ButtonDownFcn
         Callback                                            % Perform on action    
@@ -32,7 +32,7 @@ classdef passfield < hgsetget
 %         Enable = 'on'
         FontName                                            % Font name for displaying string (affects size)
         FontSize                                            % Font size for displaying string
-        ForegroundColor                                     % Text Color
+        ForegroundColor                                     % Text color as short/long name or RGB triplet
 %         HandleVisibility = 'on'
 %         HitTest = 'on'
         HorizontalAlignment = 'left'                        % Alignment for password string
@@ -140,6 +140,7 @@ classdef passfield < hgsetget
         % SET
         % =========================================================================
         function set.BackgroundColor(obj, val)
+            if ischar(val), val = cname2rgb(val); end
             % Update java peer
             peer     = get(obj, 'hjpeer');
             newColor = java.awt.Color(val(1),val(2),val(3));
@@ -187,6 +188,7 @@ classdef passfield < hgsetget
         end
         
         function set.ForegroundColor(obj, val)
+            if ischar(val), val = cname2rgb(val); end
             % Update java peer
             peer     = get(obj, 'hjpeer');
             newColor = java.awt.Color(val(1),val(2),val(3));
