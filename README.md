@@ -1,3 +1,5 @@
+![interaction](https://raw.githubusercontent.com/okomarov/wrds/master/logos.png)
+
 ### Description
 High level Matlab API that interacts with the Wharton Reasearch Data Services (WRDS) Unix server and its SAS data sets through SSH2.
     
