@@ -9,7 +9,7 @@ libname = tmp{1};
 dtname  = tmp{2};
 
 % Import sas command
-fid = fopen(fullfile(wrds.Dir, 'sas','sas2csv2.sas'));
+fid = fopen(fullfile(wrds.Dir, 'sas','sas2csv.sas'));
 str = fread(fid,'*char')';
 fclose(fid);
 
