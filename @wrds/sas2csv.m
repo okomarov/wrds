@@ -1,15 +1,24 @@
 function sas2csv(wrds, libdataname, outfile)
-if nargin < 3 || isempty(outfile)
-    outfile = fullfile(wrds.Dir,'data',[libdataname, '.zip']); 
-end
-    
+% SAS2CSV Download SAS data set as zipped CSV
+%
+%   SAS2CSV(CONN, LIBDATANAME) Where CONN should be a valid WRDS connection
+%                              and LIBDATANAME should be a string with the 
+%                              SAS library and dataset in the format
+%                              <libref>.<data set>, e.g. 'CRSPA.MSI'.
+%
+%   SAS2CSV(..., OUTFILE)
+%
+% See also: WRDS, UNZIP, CSVREAD, READTABLE
+
+if nargin < 3, outfile = [libdataname '.zip']; end
+        
 % Library and datasetname
 tmp     = regexp(libdataname, '\.','split');
 libname = tmp{1};
 dtname  = tmp{2};
 
 % Import sas command
-fid = fopen(fullfile(wrds.Dir, 'sas','sas2csv.sas'));
+fid = fopen(fullfile(wrds.Fullpath, 'sas','sas2csv.sas'));
 str = fread(fid,'*char')';
 fclose(fid);
 
@@ -35,12 +44,19 @@ cmd = sprintf(['rm tmp/sas2csv.sas;'...                     % Delete
     ],sascmd, libdataname, tmpzip);
 
 % Execute through ssh
-wrds.ssh2obj = ssh2_command(wrds.ssh2obj,cmd,1);
+wrds.cmd(cmd);
 
 % Transfer the data
-localdir     = fileparts(outfile);
-wrds.ssh2obj = scp_get(wrds.ssh2obj, tmpzip, localdir);
+try 
+    wrds.SCPget(tmpzip, outfile);
+    ME = [];
+catch ME
+end
 
-% Rename
-movefile(fullfile(localdir, [fulluuid '.zip']), outfile)
+% Cleanup
+wrds.cmd(sprintf('rm %s',tmpzip));
+
+if ~isempty(ME)
+    rethrow(ME)
+end
 end
