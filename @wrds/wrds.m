@@ -53,14 +53,17 @@ classdef wrds < handle
             obj.Fullpath = regexprep(fileparts(mfilename('fullpath')),'\@wrds','');
         end
         
-        function obj = cmd(obj, cmdstr)
+        function [obj, result] = cmd(obj, cmdstr)
             % CMD Execute command on UNIX shell
             
             if obj.Verbose, fprintf('Executing command.\n'), end
             obj.SSH2conn = ssh2_command(obj.SSH2conn,cmdstr,obj.Verbose);
+            if nargout == 2
+                result = obj.SSH2conn.command_result;
+            end
         end
            
-        function obj = SCPget(obj, remotefile, outfile)
+        function [obj, outfile] = SCPget(obj, remotefile, outfile)
             % SCPget Download file from remote host
             
             if nargin < 3 || isempty(outfile)
@@ -85,7 +88,8 @@ classdef wrds < handle
             
             % Rename
             if ~strcmp(lfname, rfname)
-                movefile(fullfile(lpath, [rfname, rext]), fullfile(lpath, [lfname, lext]))
+                outfile = fullfile(lpath, [lfname, lext]);
+                movefile(fullfile(lpath, [rfname, rext]), outfile)
             end
         end
         
