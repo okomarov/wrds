@@ -141,8 +141,11 @@ classdef passfield < hgsetget
         % =========================================================================
         % GET
         % =========================================================================
+        
+        % Explicit get.Password from java peer or obj.Password is executed
+        % BEFORE the listener updates obj.Password
         function val = get.Password(obj)
-            val = obj.hjpeer.getPassword;
+            val = reshape(obj.hjpeer.getPassword, 1, numel(obj.hjpeer.getPassword));
         end
         
         % =========================================================================
@@ -322,8 +325,7 @@ classdef passfield < hgsetget
         
         function updatePassword(obj)
             % Listener's callback to updat the Password property from the Java peer
-            pass         = obj.hjpeer.getPassword;
-            obj.Password = reshape(pass,1,numel(pass));
+            obj.Password = obj.hjpeer.getPassword;
         end
         
     end
