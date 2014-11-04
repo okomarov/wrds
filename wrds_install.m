@@ -11,4 +11,6 @@ addpath(fullfile(p,'external','ssh2'))
 savepath
 
 % Make data path
-mkdir(fullfile(p,'data'))
+if ~exist(fullfile(p,'data'),'dir')
+    mkdir(fullfile(p,'data'))
+end
