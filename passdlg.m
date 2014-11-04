@@ -1,4 +1,4 @@
-function answer = passdlg(uitype)
+function answer = passdlg(uitype, varargin)
 % PASSDLG Create and open password dialog box
 %   
 %   PASSDLG(UITYPE) Supports several types of dialogs. It will 
@@ -12,6 +12,8 @@ function answer = passdlg(uitype)
 %                   'ConfirmPass' and 'ShowHideCheckBox', or a char string
 %                   with the initial letters 'u', 'c' and 's', e.g. 'cs'.
 % 
+%   PASSDLG(..., Name, Value) Supports Name/Value pairs of <a href="matlab: doc figure-properties">figure properties</a>.
+%
 %
 %   ANSWER = ... 
 %       Returns a structure with cellstring fields (by default {''})
@@ -50,8 +52,8 @@ fh = figure('DockControls'  , 'off',...
     'NumberTitle'   , 'off',...
     'Resize'        , 'on',...
     'UserData'      , 'Cancel',...
-    'Visible'       , 'on',...
-    'WindowStyle'   , 'normal',...
+    'Visible'       , 'off',...
+    'WindowStyle'   , 'modal',...
     'Name'          , 'Password',...
     'Position'      , [0, 0, 175 83.6 + offset]);
 
@@ -146,8 +148,11 @@ end
 % Add resize function
 set(fh,'ResizeFcn', {@doResize, h});
 
-% Make it visible
+% Make it visible and apply additional settings
 movegui(fh,'center')
+if nargin > 1
+    set(fh, varargin{:});
+end
 set(fh,'Visible','on');
 drawnow
 
