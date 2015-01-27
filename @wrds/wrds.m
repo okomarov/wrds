@@ -33,6 +33,7 @@ classdef wrds < handle
     properties %(Access=private)
         SSH2conn                            % SSH2 connection
         Fullpath                            % Full path to wrds folder
+        Librefs
     end
     
     methods
@@ -51,6 +52,9 @@ classdef wrds < handle
             
             % Record where the wrds path is
             obj.Fullpath = regexprep(fileparts(mfilename('fullpath')),'\@wrds','');
+            
+            % List subscribed libraries
+            obj.Librefs = getLibrefs(obj);
         end
         
         function [obj, result] = cmd(obj, cmdstr)
