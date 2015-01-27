@@ -28,7 +28,7 @@ classdef wrds < handle
     
     
     properties
-        Verbose@logical = false;            % Toggle verbosity
+        isVerbose@logical = false;          % Toggle verbosity
     end
     properties %(Access=private)
         SSH2conn                            % SSH2 connection
@@ -56,11 +56,8 @@ classdef wrds < handle
         function [obj, result] = cmd(obj, cmdstr)
             % CMD Execute command on UNIX shell
             
-            if obj.Verbose, fprintf('Executing command.\n'), end
-            obj.SSH2conn = ssh2_command(obj.SSH2conn,cmdstr,obj.Verbose);
-            if nargout == 2
-                result = obj.SSH2conn.command_result;
-            end
+            if obj.isVerbose, fprintf('Executing command.\n'), end
+            [obj.SSH2conn, result] = ssh2_command(obj.SSH2conn,cmdstr,obj.isVerbose);
         end
            
         function [obj, outfile] = SCPget(obj, remotefile, outfile)
@@ -81,7 +78,7 @@ classdef wrds < handle
                 lext   = rext;
             end
                         
-            if obj.Verbose, fprintf('Downloading file.\n'), end
+            if obj.isVerbose, fprintf('Downloading file.\n'), end
             
             % Download file
             obj.SSH2conn = scp_get(obj.SSH2conn, [rfname, rext], lpath, rpath);
@@ -94,7 +91,7 @@ classdef wrds < handle
         end
         
         function obj = close(obj)
-            if obj.Verbose, fprintf('Closing connection.\n'), end
+            if obj.isVerbose, fprintf('Closing connection.\n'), end
             obj.SSH2conn = ssh2_close(obj.SSH2conn);
         end
         function delete(obj)
