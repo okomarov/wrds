@@ -34,6 +34,7 @@ classdef wrds < handle
         SSH2conn                            % SSH2 connection
         Fullpath                            % Full path to wrds folder
         Librefs
+        Libdatasets
     end
     
     methods
