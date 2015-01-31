@@ -6,9 +6,10 @@ addpath(p)
 
 % Add path to ssh2
 addpath(fullfile(p,'external','ssh2'))
+addpath(fullfile(p,'external','passfield'))
 
 % Save path
-savepath
+% savepath
 
 % Make data path
 if ~exist(fullfile(p,'data'),'dir')
