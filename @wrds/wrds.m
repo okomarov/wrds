@@ -45,13 +45,13 @@ classdef wrds < handle
             error(javachk('jvm'))
             
             % Defaults initialization
-            if nargin < 1 || isempty(pass), 
+            if nargin < 1 || isempty(username), 
                 tmp  = passdlg('ups'); 
                 username = tmp.User{1};
                 pass     = tmp.Pass{1}; 
             elseif nargin < 2 || isempty(pass), 
                 tmp  = passdlg('ps'); 
-                pass = tmp.Pass; 
+                pass = tmp.Pass{1}; 
             end
             if nargin < 3 || isempty(host), host = 'wrds.wharton.upenn.edu';     end
             if nargin < 4 || isempty(port), port = 22;                           end
