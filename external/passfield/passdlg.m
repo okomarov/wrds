@@ -172,6 +172,7 @@ if ishghandle(fh)
 else
     [answer.User, answer.Pass] = deal({''});
 end
+drawnow
 end
 
 function kpf_figure(obj, evd)
@@ -227,13 +228,15 @@ end
 % Show/hide password
 function clb_checkbox(obj,evd,varargin)
 Data = varargin{1};
-if get(obj,'Value')
-    for ii = 2:numel(Data.edit)
-        Data.edit{ii}.show;
-    end
-else
-    for ii = 2:numel(Data.edit)
-        Data.edit{ii}.hide;
+isChecked = get(obj,'Value');
+for ii = 1:numel(Data.edit)
+    editbox = Data.edit{ii};
+    if isa(editbox,'passfield')
+        if isChecked
+            editbox.show;
+        else
+            editbox.hide;
+        end
     end
 end
 end
