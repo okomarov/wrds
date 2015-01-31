@@ -32,8 +32,8 @@ catch
     cmd = sprintf(['touch "~/tmp/cmd.sas";',...                 % Create file
         'printf ''%s'' > ~/tmp/cmd.sas;',...                    % Write sas command
         'sas ~/tmp/cmd.sas -log ~/tmp/cmd.log;',...             % Execute sas
-        'grep ''^ *[A-Z_]* *$'' ~/tmp/cmd.lst | ',...
-        'sed ''s/ *//g'';',...                                  % Parse .lst
+        'grep ''^ *[A-Z_0-9]* *$'' ~/tmp/cmd.lst | ',...
+        'sed ''s/ *//g'';'],...                                 % Parse .lst
         'rm ~/tmp/cmd.*'],...                                   % Cleanup
         sascmd);
     
