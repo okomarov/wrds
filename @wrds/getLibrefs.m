@@ -19,12 +19,14 @@ if isempty(librefs)
         'sas ~/tmp/cmd.sas -log ~/tmp/cmd.log;',...             % Execute sas
         'grep ''NOTE: Libref='' ~/tmp/cmd.log | ',...
         'sed ''s/^NOTE: Libref= *//'' | ',...                     
-        'sed ''s/ *//g'';',...                                  % Parse log for librefs
-        'rm ~/tmp/cmd.*'],...                                   % Cleanup
+        'sed ''s/ *//g'';'],...                                  % Parse log for librefs
         sascmd);
     
     % Execute through ssh
     [~,result] = wrds.cmd(cmd);
+    
+    % Cleanup
+    wrds.cmd('rm ~/tmp/cmd.*');
     
     % Store in wrds
     librefs = sort(result);

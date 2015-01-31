@@ -34,11 +34,13 @@ catch
         'sas ~/tmp/cmd.sas -log ~/tmp/cmd.log;',...             % Execute sas
         'grep ''^ *[A-Z_0-9]* *$'' ~/tmp/cmd.lst | ',...
         'sed ''s/ *//g'';'],...                                 % Parse .lst
-        'rm ~/tmp/cmd.*'],...                                   % Cleanup
         sascmd);
     
     % Execute through ssh
     [~,result] = wrds.cmd(cmd);
+    
+    % Cleanup
+    wrds.cmd('rm ~/tmp/cmd.*');
     
     % Store in wrds
     dtnames = sort(result);
