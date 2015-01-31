@@ -29,6 +29,7 @@ classdef wrds < handle
     
     properties
         isVerbose@logical = false;          % Toggle verbosity
+        isConnected@logical = false;        % Track connection status
     end
     properties %(Access=private)
         SSH2conn                            % SSH2 connection
@@ -58,12 +59,18 @@ classdef wrds < handle
             
             % Establish ssh2 connection
             obj.SSH2conn = ssh2_config(host, username, pass, port);
+            obj.SSH2conn = ssh2_main(obj.SSH2conn);
             
             % Record where the wrds path is
             obj.Fullpath = regexprep(fileparts(mfilename('fullpath')),'\@wrds','');
             
+            % Check if connected
+            obj.isConnected = ~isempty(obj.SSH2conn.connection);
+            
             % List subscribed libraries
-            obj.Librefs = getLibrefs(obj);
+            if obj.isConnected
+                obj.Librefs = getLibrefs(obj);
+            end
         end
         
         function [obj, result] = cmd(obj, cmdstr)
