@@ -59,7 +59,9 @@ classdef wrds < handle
             
             % Establish ssh2 connection
             obj.SSH2conn = ssh2_config(host, username, pass, port);
-            obj.SSH2conn = ssh2_main(obj.SSH2conn);
+            if ~isempty(username)
+                obj.SSH2conn = ssh2_main(obj.SSH2conn);
+            end
             
             % Record where the wrds path is
             obj.Fullpath = regexprep(fileparts(mfilename('fullpath')),'\@wrds','');
