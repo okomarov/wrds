@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.19056.svg)](http://dx.doi.org/10.5281/zenodo.19056)
+
 ![interaction](https://raw.githubusercontent.com/okomarov/wrds/master/logos.png)
 
 ### Description
