@@ -11,13 +11,13 @@ function info = getDatasetInfo(wrds, libdataname)
 % Library and datasetname
 tmp    = regexp(libdataname, '\.','split');
 libref = tmp{1};
-dtname = tmp{2};
+dtname = upper(tmp{2});
 
 % Sanitize input
 try
-    allLib  = wrds.getLibrefs;
-    [~,pos] = ismember(libref, allLib);
-    libref  = allLib{pos};
+    allLib = wrds.getLibrefs;
+    idx    = strcmpi(libref, allLib);
+    libref = allLib{idx};
 catch ME
 end
 

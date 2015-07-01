@@ -10,8 +10,8 @@ function dtnames = getDatasetNames(wrds, libref)
 % Sanitize input
 try
     allLib = wrds.getLibrefs;
-    [~,pos] = ismember(libref, allLib);
-    libref = allLib{pos};
+    idx    = strcmpi(libref, allLib);
+    libref = allLib{idx};
 catch ME
 end
 

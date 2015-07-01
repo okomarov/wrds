@@ -13,9 +13,17 @@ function sas2csv(wrds, libdataname, outfile)
 if nargin < 3, outfile = [libdataname '.zip']; end
         
 % Library and datasetname
-tmp     = regexp(libdataname, '\.','split');
-libname = tmp{1};
-dtname  = tmp{2};
+tmp    = regexp(libdataname, '\.','split');
+libref = tmp{1};
+dtname = upper(tmp{2});
+
+% Sanitize input
+try
+    allLib = wrds.getLibrefs;
+    idx    = strcmpi(libref, allLib);
+    libref = allLib{idx};
+catch ME
+end
 
 % Import sas command
 fid = fopen(fullfile(wrds.Fullpath, 'sas','sas2csv.sas'));
@@ -28,7 +36,7 @@ tmpzip   = sprintf('~/tmp/%s.zip',fulluuid);
 uuid     = fulluuid(1:8);
 
 % Fill in dataset and temp file names
-sascmd = sprintf(str, uuid, tmpzip, libname, dtname, libdataname, uuid);
+sascmd = sprintf(str, uuid, tmpzip, libref, dtname, libdataname, uuid);
 sascmd = regexprep(sascmd,'\*[^\n\r]*[\n\r]*','');      % strip comments
 sascmd = regexprep(sascmd,'[ \t]*',' ');                % multiple spaces to one
 sascmd = regexprep(sascmd,'[\n\r]*','\\n');             % newlines to literal \n
