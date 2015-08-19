@@ -39,7 +39,8 @@ cmd    = sprintf(['touch "~/tmp/cmd.sas";',...              % Create file
     sascmd);
 
 % Execute through ssh
-[~,result] = wrds.cmd(cmd);
+if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
+[~,result] = wrds.cmd(cmd,false);
 info       = char(result);
 
 % Cleanup

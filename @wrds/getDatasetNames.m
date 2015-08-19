@@ -37,7 +37,8 @@ catch
         sascmd);
     
     % Execute through ssh
-    [~,result] = wrds.cmd(cmd);
+    if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
+    [~,result] = wrds.cmd(cmd, false);
     
     % Cleanup
     wrds.cmd('rm ~/tmp/cmd.*');

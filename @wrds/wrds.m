@@ -28,10 +28,10 @@ classdef wrds < handle
     
     
     properties
-        isVerbose@logical = false;          % Toggle verbosity
+        isVerbose@logical = true;           % Toggle verbosity
         isConnected@logical = false;        % Track connection status
     end
-    properties %(Access=private)
+    properties (Access=private)
         SSH2conn                            % SSH2 connection
         Fullpath                            % Full path to wrds folder
         Librefs
@@ -75,11 +75,11 @@ classdef wrds < handle
             end
         end
         
-        function [obj, result] = cmd(obj, cmdstr)
+        function [obj, result] = cmd(obj, cmdstr, isVerbose)
             % CMD Execute command on UNIX shell
-            
-            if obj.isVerbose, fprintf('Executing command.\n'), end
-            [obj.SSH2conn, result] = ssh2_command(obj.SSH2conn,cmdstr,obj.isVerbose);
+            if nargin < 3, isVerbose = obj.isVerbose; end
+
+            [obj.SSH2conn, result] = ssh2_command(obj.SSH2conn,cmdstr,isVerbose);
         end
            
         function [obj, outfile] = SCPget(obj, remotefile, outfile)
@@ -100,7 +100,7 @@ classdef wrds < handle
                 lext   = rext;
             end
                         
-            if obj.isVerbose, fprintf('Downloading file.\n'), end
+            if obj.isVerbose, fprintf('Downloading file. Please, wait.\n'), end
             
             % Download file
             obj.SSH2conn = scp_get(obj.SSH2conn, [rfname, rext], lpath, rpath);

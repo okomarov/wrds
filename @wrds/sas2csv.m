@@ -11,7 +11,9 @@ function sas2csv(wrds, libdataname, outfile)
 % See also: WRDS, UNZIP, CSVREAD, READTABLE
 
 if nargin < 3, outfile = [libdataname '.zip']; end
-        
+
+if wrds.isVerbose, fprintf('Retrieving ''%s''.\n', libdataname), end
+
 % Library and datasetname
 tmp    = regexp(libdataname, '\.','split');
 libref = tmp{1};
@@ -52,7 +54,8 @@ cmd = sprintf(['rm tmp/sas2csv.sas;'...                     % Delete
     ],sascmd, libdataname, tmpzip);
 
 % Execute through ssh
-wrds.cmd(cmd);
+if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
+wrds.cmd(cmd,false);
 
 % Transfer the data
 try 
@@ -62,7 +65,7 @@ catch ME
 end
 
 % Cleanup
-wrds.cmd(sprintf('rm %s',tmpzip));
+wrds.cmd(sprintf('rm %s',tmpzip),false);
 
 if ~isempty(ME)
     rethrow(ME)

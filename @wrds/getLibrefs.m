@@ -1,5 +1,5 @@
 function librefs = getLibrefs(wrds)
-% GETLIBDATANAMES Retrieve subscribed library names
+% GETLIBDATANAMES Retrieve all SAS library names
 %
 %    LIBREFS = GETLIBDATANAMES(WRDS) It retrieves the libref part 
 %                                    in <libref>.<data set>, e.g. 
@@ -10,7 +10,7 @@ function librefs = getLibrefs(wrds)
 librefs = wrds.Librefs;
 
 if isempty(librefs)
-    if wrds.isVerbose, fprintf('Retrieving librefs.\n'), end
+    if wrds.isVerbose, fprintf('Retrieving SAS library names (libref).\n'), end
     
     % Build command
     sascmd = 'libname _all_ list;';
@@ -23,6 +23,7 @@ if isempty(librefs)
         sascmd);
     
     % Execute through ssh
+    if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
     [~,result] = wrds.cmd(cmd);
     
     % Cleanup
