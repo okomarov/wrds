@@ -21,7 +21,7 @@ classdef wrds < handle
     %
     %
     %   Examples:
-    %       w = username('olegkoma','forgiveMeIfIDontTellYou');
+    %       w = username('myuser','forgiveMeIfIDontTellYou');
     %       w.cmd('echo "Hello World!"')
     %   
     % See also: SSH2
@@ -77,13 +77,17 @@ classdef wrds < handle
         
         function [obj, result] = cmd(obj, cmdstr, isVerbose)
             % CMD Execute command on UNIX shell
+            %
+            % Example:
+            %       w = username('myuser','forgiveMeIfIDontTellYou');
+            %       w.cmd('echo "Hello World!"')
             if nargin < 3, isVerbose = obj.isVerbose; end
 
             [obj.SSH2conn, result] = ssh2_command(obj.SSH2conn,cmdstr,isVerbose);
         end
-           
-        function [obj, outfile] = SCPget(obj, remotefile, outfile)
-            % SCPget Download file from remote host
+        
+        function [obj, outfile] = getFile(obj, remotefile, outfile)
+            % getFile Transfer file from remote host by Secure Copy
             
             if nargin < 3 || isempty(outfile)
                 outfile = fullfile(obj.Fullpath,'data\');

@@ -10,8 +10,6 @@ function sas2csv(wrds, libdataname, outfile)
 %
 % See also: WRDS, UNZIP, CSVREAD, READTABLE
 
-if nargin < 3, outfile = [libdataname '.zip']; end
-
 if wrds.isVerbose, fprintf('Retrieving ''%s''.\n', libdataname), end
 
 % Library and datasetname
@@ -59,7 +57,7 @@ wrds.cmd(cmd,false);
 
 % Transfer the data
 try 
-    wrds.SCPget(tmpzip, outfile);
+    wrds.getFile(tmpzip, outfile);
     ME = [];
 catch ME
 end
