@@ -24,7 +24,7 @@ if isempty(librefs)
     
     % Execute through ssh
     if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
-    [~,result] = wrds.cmd(cmd);
+    [~,result] = wrds.cmd(cmd,false);
     
     % Cleanup
     wrds.cmd('rm ~/tmp/cmd.*');
