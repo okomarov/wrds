@@ -28,7 +28,7 @@ classdef wrds < handle
     
     
     properties
-        isVerbose@logical = true;           % Toggle verbosity
+        isVerbose@logical   = true;           % Toggle verbosity
         isConnected@logical = false;        % Track connection status
     end
     properties (Access=private)
@@ -47,7 +47,7 @@ classdef wrds < handle
             
             % Defaults initialization
             if nargin < 1 || isempty(username), 
-                tmp  = passdlg('ups'); 
+                tmp      = passdlg('ups'); 
                 username = tmp.User{1};
                 pass     = tmp.Pass{1}; 
             elseif nargin < 2 || isempty(pass), 
@@ -69,9 +69,13 @@ classdef wrds < handle
             % Check if connected
             obj.isConnected = ~isempty(obj.SSH2conn.connection);
             
-            % List subscribed libraries
+            % Initializations
             if obj.isConnected
+                fprintf('Connected.\n')
+                obj.cmd('cd ~; mkdir -p tmp',false);
                 obj.Librefs = getLibrefs(obj);
+            else
+                fprintf('Could not connect.\n')
             end
         end
         
@@ -117,8 +121,11 @@ classdef wrds < handle
         end
         
         function obj = close(obj)
-            if obj.isVerbose, fprintf('Closing connection.\n'), end
-            obj.SSH2conn = ssh2_close(obj.SSH2conn);
+            if obj.isConnected
+                if obj.isVerbose, fprintf('Closing connection.\n'), end
+                obj.SSH2conn = ssh2_close(obj.SSH2conn);
+                obj.isConnected = false;
+            end
         end
         function delete(obj)
             close(obj);
