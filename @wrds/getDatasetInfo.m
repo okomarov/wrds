@@ -32,7 +32,7 @@ sascmd = sprintf(['FILENAME out "~/tmp/cmd.lst";',...
     'RUN;'],...
     libref, dtname);
 % UNIX command
-cmd    = sprintf(['touch "~/tmp/cmd.sas";',...              % Create file
+cmd    = sprintf(['touch ~/tmp/cmd.sas;',...                % Create file
     'printf ''%s'' > ~/tmp/cmd.sas;',...                    % Write sas command
     'sas ~/tmp/cmd.sas -log ~/tmp/cmd.log;',...             % Execute sas
     'cat ~/tmp/cmd.lst;'],...                               % Print file
