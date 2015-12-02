@@ -25,18 +25,15 @@ try
 catch ME
 end
 
-% Import sas command
-fid = fopen(fullfile(wrds.Fullpath, 'sas','sas2csv.sas'));
-str = fread(fid,'*char')';
-fclose(fid);
+% Sas command
+str = getSasCmd();
 
 % Create .zip temp name and 8char uuid for the fileref
-fulluuid = ['f', strrep(char(java.util.UUID.randomUUID),'-','_')];
-tmpzip   = sprintf('~/tmp/%s.zip',fulluuid);
-uuid     = fulluuid(1:8);
+uuid   = ['f', strrep(char(java.util.UUID.randomUUID),'-','_')];
+tmpzip = sprintf('~/tmp/%s.zip',uuid);
 
 % Fill in dataset and temp file names
-sascmd = sprintf(str, uuid, tmpzip, libref, dtname, libdataname, uuid);
+sascmd = sprintf(str, tmpzip, libdataname, libref, dtname, libdataname);
 sascmd = regexprep(sascmd,'\*[^\n\r]*[\n\r]*','');      % strip comments
 sascmd = regexprep(sascmd,'[ \t]*',' ');                % multiple spaces to one
 sascmd = regexprep(sascmd,'[\n\r]*','\\n');             % newlines to literal \n
@@ -47,9 +44,8 @@ sascmd = regexprep(sascmd,'''','\\047');                % single quote ' to octa
 cmd = sprintf(['rm tmp/sas2csv.sas;'...                     % Delete
     'touch "~/tmp/sas2csv.sas";',...                        % Create
     'printf ''%s'' > ~/tmp/sas2csv.sas;',...                % Write sas command
-    'sas tmp/sas2csv.sas -log ~/tmp/report.log && ',...     % Execute sas
-    'printf "@ -\\n@=%s.csv\\n" | zipnote -w %s',...        % Rename file in zip 
-    ],sascmd, libdataname, tmpzip);
+    'sas ~/tmp/sas2csv.sas -log ~/tmp/report.log;',...      % Execute sas
+    ],sascmd);
 
 % Execute through ssh
 if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
@@ -68,4 +64,28 @@ wrds.cmd(sprintf('rm %s',tmpzip),false);
 if ~isempty(ME)
     rethrow(ME)
 end
+end
+
+function str = getSasCmd()
+nl  = sprintf('\n');
+str = [...
+'* Pipe into .zip;' nl...
+'filename writer zip "%s" member="%s.csv";' nl...
+'' nl...
+'* Taken from https://communities.sas.com/message/185633#185633;' nl...
+'* Read dataset variable names;' nl...
+'proc sql noprint;' nl...
+' select ''"''||trim(name)||''"''' nl...
+' into :names' nl...
+' separated by "'',''"' nl...
+' from dictionary.columns' nl...
+' where libname eq "%s" and memname eq "%s";' nl...
+'quit;' nl...
+'* Write data;' nl...
+'data _null_;' nl...
+' set %s;' nl...
+' file writer dsd dlm='','' lrecl=1000000;' nl...
+' if _n_ eq 1 then put &names.;' nl...
+' put (_all_) (+0);' nl...
+'run;'];
 end
