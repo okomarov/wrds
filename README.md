@@ -5,6 +5,9 @@
 ### Description
 High level Matlab API that interacts with the Wharton Reasearch Data Services (WRDS) Unix server and its SAS data sets through SSH2.
     
+### Installation
+First, run `wrds_install()` or add all  relevant paths manually. You are ready to use wrds.
+
 ### Requirements
 * An account with WRDS of the type that admits SSH connections (PhD or above). 
   See WRDS's [account types](http://wrds-web.wharton.upenn.edu/wrds/support/Additional%20Support/Account%20Types.cfm) for details.
