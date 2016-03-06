@@ -13,7 +13,6 @@ if isempty(dir(fullfile(passfield_path,'*.m')))
     try
         fname = unzip('https://github.com/okomarov/passfield/archive/master.zip',tempdir());
         copyfile(fileparts(fname{1}), passfield_path)
-        addpath(passfield_path)
     catch
         warning(['could not install the passfield() dependency.\n\n', ...
                  'For manual installation:\n',...
@@ -22,9 +21,7 @@ if isempty(dir(fullfile(passfield_path,'*.m')))
                  '\t3) run addpath(''%s'').\n'],passfield_path,passfield_path)
     end
 end
-
-% Save path
-% savepath
+addpath(passfield_path)
 
 % Make data path
 if ~exist(fullfile(p,'data'),'dir')
