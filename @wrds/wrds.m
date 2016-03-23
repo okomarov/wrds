@@ -162,5 +162,9 @@ classdef wrds < handle
             end
             [trash,result] = obj.cmd(str,false);
         end
+
+        function fun = cmdCleanup(obj)
+            fun = @() obj.cmd('rm ~/tmp/cmd.*',false);
+        end
     end
 end

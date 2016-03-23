@@ -12,6 +12,8 @@ function sas2csv(wrds, libdataname, outfile)
 
 if wrds.isVerbose, fprintf('Retrieving ''%s''.\n', libdataname), end
 
+cleanup = onCleanup(wrds.cmdCleanup());
+
 % Library and datasetname
 tmp    = regexp(libdataname, '\.','split');
 libref = tmp{1};
@@ -50,18 +52,8 @@ cmd = sprintf(['rm tmp/sas2csv.sas;'...                     % Delete
 wrds.forwardCmd(cmd);
 
 % Transfer the data
-try 
-    wrds.getFile(tmpzip, outfile);
-    ME = [];
-catch ME
-end
-
-% Cleanup
-wrds.cmd(sprintf('rm %s',tmpzip),false);
-
-if ~isempty(ME)
-    rethrow(ME)
-end
+cleanup = onCleanup(@() wrds.cmd('rm ~/tmp/dataset.zip',false));
+wrds.getFile('~/tmp/dataset.zip', outfile);
 end
 
 function str = getSasCmd()

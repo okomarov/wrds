@@ -23,6 +23,8 @@ end
 
 if wrds.isVerbose, fprintf('Retrieving dataset info for ''%s''.\n', libdataname), end
 
+cleanup = onCleanup(wrds.cmdCleanup());
+
 % SAS command
 sascmd = sprintf(['FILENAME out "~/tmp/cmd.lst";',...
     'PROC PRINTTO print=out;',...
@@ -40,8 +42,4 @@ cmd    = sprintf(['touch ~/tmp/cmd.sas;',...                % Create file
 
 result = wrds.forwardCmd(cmd);
 info   = char(result);
-
-% Cleanup
-wrds.cmd('rm ~/tmp/cmd.*');
-
 end

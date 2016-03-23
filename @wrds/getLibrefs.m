@@ -11,7 +11,9 @@ librefs = wrds.Librefs;
 
 if isempty(librefs)
     if wrds.isVerbose, fprintf('Retrieving SAS library names (libref).\n'), end
-    
+
+    cleanup = onCleanup(wrds.cmdCleanup());
+
     % Build command
     sascmd = 'libname _all_ list;';
     cmd = sprintf(['touch "~/tmp/cmd.sas";',...                 % Create file
@@ -23,10 +25,7 @@ if isempty(librefs)
         sascmd);
 
     result = wrds.forwardCmd(cmd);
-    
-    % Cleanup
-    wrds.cmd('rm ~/tmp/cmd.*');
-    
+
     % Store in wrds
     librefs = sort(result);
     wrds.Librefs = librefs;

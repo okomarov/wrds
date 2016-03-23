@@ -19,7 +19,9 @@ try
     dtnames = wrds.Libdatasets.(libref);
 catch
     if wrds.isVerbose, fprintf('Retrieving dataset names for ''%s''.\n', libref), end
-    
+
+    cleanup = onCleanup(wrds.cmdCleanup());
+
     % SAS command
     sascmd = sprintf(['FILENAME out "~/tmp/cmd.lst";',...
         'PROC PRINTTO print=out;',...
@@ -37,10 +39,7 @@ catch
         sascmd);
 
     result = wrds.forwardCmd(cmd);
-    
-    % Cleanup
-    wrds.cmd('rm ~/tmp/cmd.*');
-    
+
     % Store in wrds
     dtnames = sort(result);
     wrds.Libdatasets.(libref) = dtnames;
