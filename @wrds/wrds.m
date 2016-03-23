@@ -10,12 +10,12 @@ classdef wrds < handle
     %       - <a href="matlab: disp(['Java enabled: ' isempty(javachk('jvm'))+'0'])">Java enabled</a>
     %
     %   Syntax:
-    %       WRDS(USERNAME, PASS) Supply USERNAME and PASS as strings. 
+    %       WRDS(USERNAME, PASS) Supply USERNAME and PASS as strings.
     %
-    %       WRDS(..., HOST, PORT) Optionally, provide HOST and/or PORT 
-    %                             which are respectively defaulted to 
-    %                             'wrds.wharton.upenn.edu' and 22. 
-    %   
+    %       WRDS(..., HOST, PORT) Optionally, provide HOST and/or PORT
+    %                             which are respectively defaulted to
+    %                             'wrds-cloud.wharton.upenn.edu' and 22.
+    %
     %
     %       W = WRDS(...) Connection to the server
     %
@@ -54,8 +54,6 @@ classdef wrds < handle
                 tmp  = passdlg('ps'); 
                 pass = tmp.Pass{1}; 
             end
-            if nargin < 3 || isempty(host), host = 'wrds.wharton.upenn.edu';     end
-            if nargin < 4 || isempty(port), port = 22;                           end
             
             % Establish ssh2 connection
             obj.SSH2conn = ssh2_config(host, username, pass, port);
@@ -79,6 +77,8 @@ classdef wrds < handle
             end
         end
         
+        if nargin < 3 || isempty(host), host = 'wrds-cloud.wharton.upenn.edu'; end
+        if nargin < 4 || isempty(port), port = 22;                             end
         function [obj, result] = cmd(obj, cmdstr, isVerbose)
             % CMD Execute command on UNIX shell
             %
