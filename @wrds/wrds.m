@@ -119,6 +119,29 @@ classdef wrds < handle
                 movefile(fullfile(lpath, [rfname, rext]), outfile)
             end
         end
+
+        function obj = putFile(obj, localfile, remotefile)
+            % putFile Transfer local file to remote host by Secure Copy
+
+            if nargin < 3 || isempty(remotefile)
+                remotefile = '';
+            end
+
+            % Process paths
+            [rpath, rfname, rext] = fileparts(remotefile);
+            [lpath, lfname, lext] = fileparts(localfile);
+            if isempty(rpath)
+                rpath = 'tmp/';
+            end
+            if isempty(rfname)
+                rfname = lfname;
+                rext   = lext;
+            end
+
+            if obj.isVerbose, fprintf('Uploading file. Please, wait.\n'), end
+
+            obj.SSH2conn = scp_put(obj.SSH2conn, [lfname, lext], rpath, lpath, [rfname, rext]);
+        end
         
         function obj = close(obj)
             if obj.isConnected
