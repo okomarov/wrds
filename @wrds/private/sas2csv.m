@@ -47,9 +47,7 @@ cmd = sprintf(['rm tmp/sas2csv.sas;'...                     % Delete
     'sas ~/tmp/sas2csv.sas -log ~/tmp/report.log;',...      % Execute sas
     ],sascmd);
 
-% Execute through ssh
-if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
-wrds.cmd(cmd,false);
+wrds.forwardCmd(cmd);
 
 % Transfer the data
 try 

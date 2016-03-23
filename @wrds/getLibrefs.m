@@ -21,10 +21,8 @@ if isempty(librefs)
         'sed ''s/^NOTE: Libref= *//'' | ',...                     
         'sed ''s/ *//g'';'],...                                  % Parse log for librefs
         sascmd);
-    
-    % Execute through ssh
-    if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
-    [~,result] = wrds.cmd(cmd,false);
+
+    result = wrds.forwardCmd(cmd);
     
     % Cleanup
     wrds.cmd('rm ~/tmp/cmd.*');

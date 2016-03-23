@@ -154,4 +154,13 @@ classdef wrds < handle
             close(obj);
         end
     end
+
+    methods (Access = private)
+        function result = forwardCmd(obj,str)
+            if obj.isVerbose
+                fprintf('Request submitted to WRDS servers. Please wait...\n')
+            end
+            [trash,result] = obj.cmd(str,false);
+        end
+    end
 end

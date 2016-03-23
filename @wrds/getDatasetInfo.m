@@ -38,10 +38,8 @@ cmd    = sprintf(['touch ~/tmp/cmd.sas;',...                % Create file
     'cat ~/tmp/cmd.lst;'],...                               % Print file
     sascmd);
 
-% Execute through ssh
-if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
-[~,result] = wrds.cmd(cmd,false);
-info       = char(result);
+result = wrds.forwardCmd(cmd);
+info   = char(result);
 
 % Cleanup
 wrds.cmd('rm ~/tmp/cmd.*');

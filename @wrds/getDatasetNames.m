@@ -35,10 +35,8 @@ catch
         'grep ''^ *[A-Z_0-9]* *$'' ~/tmp/cmd.lst | ',...
         'sed ''s/ *//g'';'],...                                 % Parse .lst
         sascmd);
-    
-    % Execute through ssh
-    if wrds.isVerbose, fprintf('Request submitted to WRDS servers.\n'), end
-    [~,result] = wrds.cmd(cmd, false);
+
+    result = wrds.forwardCmd(cmd);
     
     % Cleanup
     wrds.cmd('rm ~/tmp/cmd.*');
