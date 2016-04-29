@@ -34,8 +34,9 @@ classdef wrds < handle
     properties (Access=private)
         SSH2conn                            % SSH2 connection
         Fullpath                            % Full path to wrds folder
-        Librefs
-        Libdatasets
+        Librefs                             % Cache library names
+        Libdatasets                         % Cache datasets names per library
+        Datasetinfo                         % Cache dataset info 
     end
 
     methods

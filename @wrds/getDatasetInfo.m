@@ -21,26 +21,32 @@ try
 catch ME
 end
 
-if wrds.isVerbose, fprintf('Retrieving dataset info for ''%s''.\n', libdataname), end
+try
+    info = wrds.Datasetinfo.(libref).(dtname);
+catch
+    if wrds.isVerbose, fprintf('Retrieving dataset info for ''%s''.\n', libdataname), end
 
-cleanup = onCleanup(wrds.cmdCleanup());
+    cleanup = onCleanup(wrds.cmdCleanup());
 
-% SAS command
-sascmd = sprintf(['FILENAME out "~/tmp/cmd.lst";',...
-                  'PROC PRINTTO print=out;',...
-                  'RUN;',...
-                  'PROC DATASETS LIBRARY=%s NOLIST;',...
-                  'CONTENTS DATA=%s;',...
-                  'RUN;'],...
-         libref, dtname);
+    % SAS command
+    sascmd = sprintf(['FILENAME out "~/tmp/cmd.lst";',...
+                      'PROC PRINTTO print=out;',...
+                      'RUN;',...
+                      'PROC DATASETS LIBRARY=%s NOLIST;',...
+                      'CONTENTS DATA=%s;',...
+                      'RUN;'],...
+                     libref, dtname);
 
-% UNIX command
-cmd = sprintf(['touch ~/tmp/cmd.sas;',...                    % Create file
-               'printf ''%s'' > ~/tmp/cmd.sas;',...          % Write sas command
-               'qsas ~/tmp/cmd.sas -log ~/tmp/cmd.log;',...  % Execute sas
-               'cat ~/tmp/cmd.lst;'],...                     % Print file
-      sascmd);
+    % UNIX command
+    cmd = sprintf(['touch ~/tmp/cmd.sas;',...                    % Create file
+                   'printf ''%s'' > ~/tmp/cmd.sas;',...          % Write sas command
+                   'qsas ~/tmp/cmd.sas -log ~/tmp/cmd.log;',...  % Execute sas
+                   'cat ~/tmp/cmd.lst;'],...                     % Print file
+                  sascmd);
 
-result = wrds.forwardCmd(cmd);
-info   = char(result);
+    result = wrds.forwardCmd(cmd);
+    info   = char(result);
+
+    wrds.Datasetinfo.(libref).(dtname) = info;
+end
 end
