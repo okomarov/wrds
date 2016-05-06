@@ -1,4 +1,4 @@
-function info = getDatasetInfo(wrds, libdataname)
+function info = getDatasetInfo(wrds, libdataname, force)
 % GETDATASETNAMES Retrieve dataset names within a library
 %
 %    INFO = GETDATASETINFO(WRDS, LIBDATANAME) LIBDATANAME should be a
@@ -7,6 +7,9 @@ function info = getDatasetInfo(wrds, libdataname)
 %                              e.g. 'CRSPA.MSI'.
 %
 % See also: WRDS, GETLIBREFS, GETDATASETNAME
+if nargin < 3 || isempty(force)
+    force = false;
+end
 
 % Library and datasetname
 tmp    = regexp(libdataname, '\.','split');
@@ -23,6 +26,9 @@ end
 
 try
     info = wrds.Datasetinfo.(libref).(dtname);
+    if force
+        error('Force retrival.')
+    end
 catch
     if wrds.isVerbose, fprintf('Retrieving dataset info for ''%s''.\n', libdataname), end
 
