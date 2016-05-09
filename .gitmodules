@@ -1,3 +1,7 @@
 [submodule "external/passfield"]
 	path = external/passfield
 	url = git@github.com:okomarov/passfield
+
+[submodule "external/matlab-ssh2"]
+	path = external/matlab-ssh2
+	url = git@github.com:okomarov/matlab-ssh2
