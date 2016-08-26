@@ -1,4 +1,4 @@
-function dtnames = getDatasetNames(wrds, libref)
+function dtnames = getDatasetNames(wrds, libref, force)
 % GETDATASETNAMES Retrieve dataset names within a library
 %
 %    DTNAMES = GETDATASETNAMES(WRDS, LIBREF) It retrieves the data set parts
@@ -6,6 +6,9 @@ function dtnames = getDatasetNames(wrds, libref)
 %                                    CRSPA.STOCKNAMES, etc...
 %
 % See also: WRDS, GETLIBREFS, SAS2CSV
+if nargin < 3 || isempty(force)
+    force = false;
+end
 
 % Sanitize input
 try
@@ -16,6 +19,9 @@ catch ME
 end
 
 try
+    if force
+        error('Force-forward request to wrds.');
+    end
     dtnames = wrds.Libdatasets.(libref);
 catch
     if wrds.isVerbose, fprintf('Retrieving dataset names for ''%s''.\n', libref), end
@@ -36,7 +42,7 @@ catch
                    'printf ''%s'' > ~/tmp/cmd.sas;',...                 % Write sas command
                    'qsas ~/tmp/cmd.sas -log ~/tmp/cmd.log;',...         % Execute sas
                    'grep ''^ *[A-Z_0-9]* *$'' ~/tmp/cmd.lst | ',...     % Parse .lst   
-                   'sed ''s/ *//g'';'],...                                 
+                   'sed ''s/ *//g'';'],...
           sascmd);
 
     result = wrds.forwardCmd(cmd);

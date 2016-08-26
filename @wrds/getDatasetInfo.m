@@ -25,10 +25,10 @@ catch ME
 end
 
 try
-    info = wrds.Datasetinfo.(libref).(dtname);
     if force
-        error('Force retrival.')
+        error('Force-forward request to wrds.');
     end
+    info = wrds.Datasetinfo.(libref).(dtname);
 catch
     if wrds.isVerbose, fprintf('Retrieving dataset info for ''%s''.\n', libdataname), end
 
