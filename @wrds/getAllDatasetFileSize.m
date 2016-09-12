@@ -35,6 +35,7 @@ for ii = 1:N
     libdtname = [libname, '.', dtnames{ii}];
     msg       = sprintf('Retrieving size of ''%s''.',upper(libdtname));
     set(msgh,'String',msg);
+    drawnow
 
     fsize(ii) = getDatasetFileSize(wrds,libdtname,unit);
 
