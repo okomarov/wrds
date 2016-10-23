@@ -95,14 +95,14 @@ classdef wrds < handle
             % getFile Transfer file from remote host by Secure Copy
 
             if nargin < 3 || isempty(outfile)
-                outfile = fullfile(obj.Fullpath,'data\');
+                outfile = fullfile(obj.Fullpath,'data');
             end
 
             % Process paths
             [rpath, rfname, rext] = fileparts(remotefile);
             [lpath, lfname, lext] = fileparts(outfile);
             if isempty(lpath)
-                lpath = fullfile(obj.Fullpath,'data\');
+                lpath = fullfile(obj.Fullpath,'data');
             end
             if isempty(lfname)
                 lfname = rfname;
