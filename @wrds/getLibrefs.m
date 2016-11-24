@@ -1,9 +1,7 @@
 function librefs = getLibrefs(wrds,force)
 % GETLIBDATANAMES Retrieve all SAS library names
 %
-%    LIBREFS = GETLIBDATANAMES(WRDS) It retrieves the libref part
-%                                    in <libref>.<data set>, e.g.
-%                                    CRSPA.
+%    Retrieves all cached librefs or from the server (FORCE = true)
 %
 % See also: WRDS, SAS2CSV
 if nargin < 2 || isempty(force)

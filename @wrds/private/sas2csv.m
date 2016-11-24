@@ -14,18 +14,7 @@ if wrds.isVerbose, fprintf('Retrieving ''%s''.\n', libdataname), end
 
 cleanup = onCleanup(wrds.cmdCleanup());
 
-% Library and datasetname
-tmp    = regexp(libdataname, '\.','split');
-libref = tmp{1};
-dtname = upper(tmp{2});
-
-% Sanitize input
-try
-    allLib = wrds.getLibrefs;
-    idx    = strcmpi(libref, allLib);
-    libref = allLib{idx};
-catch ME
-end
+[libref, dtname] = wrds.validateLibdataname(libdataname);
 
 % SAS command%
 sascmd = getSasCmd(libdataname, libref, dtname);

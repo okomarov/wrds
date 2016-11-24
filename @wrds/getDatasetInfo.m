@@ -11,24 +11,13 @@ if nargin < 3 || isempty(force)
     force = false;
 end
 
-% Library and datasetname
-tmp    = regexp(libdataname, '\.','split');
-libref = tmp{1};
-dtname = upper(tmp{2});
-
-% Sanitize input
-try
-    allLib = wrds.getLibrefs;
-    idx    = strcmpi(libref, allLib);
-    libref = allLib{idx};
-catch ME
-end
+[libref, dtname] = wrds.validateLibdataname(libdataname);
 
 try
     if force
         error('Force-forward request to wrds.');
     end
-    info = wrds.Datasetinfo.(libref).(dtname);
+    info = wrds.Datasetinfo.(libref).(matlab.lang.makeValidName(dtname));
 catch
     if wrds.isVerbose, fprintf('Retrieving dataset info for ''%s''.\n', libdataname), end
 
@@ -53,6 +42,6 @@ catch
     result = wrds.forwardCmd(cmd);
     info   = char(result);
 
-    wrds.Datasetinfo.(libref).(dtname) = info;
+    wrds.Datasetinfo.(libref).(matlab.lang.makeValidName(dtname)) = info;
 end
 end

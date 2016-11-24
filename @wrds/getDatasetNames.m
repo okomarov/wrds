@@ -10,13 +10,7 @@ if nargin < 3 || isempty(force)
     force = false;
 end
 
-% Sanitize input
-try
-    allLib = wrds.getLibrefs;
-    idx    = strcmpi(libref, allLib);
-    libref = allLib{idx};
-catch ME
-end
+[libref, dtname] = wrds.validateLibdataname(libdataname);
 
 try
     if force
