@@ -1,10 +1,13 @@
 function info = getDatasetInfo(wrds, libdataname, force)
 % GETDATASETNAMES Retrieve dataset names within a library
 %
-%    INFO = GETDATASETINFO(WRDS, LIBDATANAME) LIBDATANAME should be a
+%   INFO = GETDATASETINFO(WRDS, LIBDATANAME) LIBDATANAME should be a
 %                              string with the SAS library and dataset in
 %                              the format <libref>.<data set>,
 %                              e.g. 'CRSPA.MSI'.
+%
+%   NOTE: if only libref is supplied, or _ALL_ datasets, the info will
+%         be downloaded as a zipped file. 
 %
 % See also: WRDS, GETLIBREFS, GETDATASETNAME
 if nargin < 3 || isempty(force)
