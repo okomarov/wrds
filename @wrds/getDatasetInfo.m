@@ -33,15 +33,30 @@ catch
                      libref, dtname);
 
     % UNIX command
-    cmd = sprintf(['touch ~/tmp/cmd.sas;',...                    % Create file
+    cmd    = sprintf(['touch ~/tmp/cmd.sas;',...                    % Create file
                    'printf ''%s'' > ~/tmp/cmd.sas;',...          % Write sas command
-                   'qsas ~/tmp/cmd.sas -log ~/tmp/cmd.log;',...  % Execute sas
-                   'cat ~/tmp/cmd.lst;'],...                     % Print file
+                   'qsas ~/tmp/cmd.sas -log ~/tmp/cmd.log;'],... % Execute sas
                   sascmd);
-
     result = wrds.forwardCmd(cmd);
-    info   = char(result);
+
+    oldState       = wrds.isVerbose;
+    wrds.isVerbose = false;
+
+    switch dtname
+        case '_ALL_'
+            fname        = sprintf('CONTENTS_%s',libref);
+            cmd          = sprintf('cd ~/tmp; mv cmd.lst %s.txt; zip -m %s.zip %s.txt;', fname, fname, fname);
+            result       = wrds.forwardCmd(cmd);
+            fname        = sprintf('~/tmp/%s.zip',fname);
+            [wrds, info] = wrds.getFile(fname);
+            cleanup      = onCleanup(@() wrds.forwardCmd(sprintf('rm %s;',fname)));
+        otherwise
+            result = wrds.forwardCmd('cat ~/tmp/cmd.lst');
+            info   = char(result);
+    end
 
     wrds.Datasetinfo.(libref).(matlab.lang.makeValidName(dtname)) = info;
+
+    wrds.isVerbose = oldState;
 end
 end
