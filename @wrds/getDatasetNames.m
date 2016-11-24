@@ -10,7 +10,7 @@ if nargin < 3 || isempty(force)
     force = false;
 end
 
-[libref, dtname] = wrds.validateLibdataname(libdataname);
+[libref, dtname] = wrds.validateLibdataname(libref);
 
 try
     if force
