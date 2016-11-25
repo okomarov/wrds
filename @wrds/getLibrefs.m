@@ -9,7 +9,7 @@ if nargin < 2 || isempty(force)
 end
 librefs = wrds.Librefs;
 
-if isempty(librefs) || force
+if force || isempty(librefs) || iscell(librefs) && isempty(librefs{1})
     if wrds.isVerbose, fprintf('Retrieving SAS library names (libref).\n'), end
 
     cleanup = onCleanup(wrds.cmdCleanup());
