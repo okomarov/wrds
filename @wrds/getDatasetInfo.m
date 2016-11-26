@@ -33,6 +33,7 @@ catch
                            'PROC PRINTTO print=out new;',...
                            'RUN;'], fname, libref);
     else
+        fname   = [];
         printto = ['FILENAME out "~/tmp/cmd.lst";',...
                    'PROC PRINTTO print=out;',...
                    'RUN;'];
@@ -66,6 +67,8 @@ end
 end
 
 function myCleanup(wrds,fname,vstate)
-wrds.forwardCmd(sprintf('rm %s;',fname));
+if ~isempty(fname)
+    wrds.forwardCmd(sprintf('rm %s;',fname));
+end
 wrds.isVerbose = vstate;
 end
