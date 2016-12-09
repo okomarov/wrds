@@ -42,7 +42,13 @@ catch
     result = wrds.forwardCmd(cmd);
 
     % Store in wrds
-    dtnames                   = sort(result);
+    dtnames = sort(result);
+    if isempty(dtnames{1})
+        dtnames = {};
+    end
     wrds.Libdatasets.(libref) = dtnames;
+end
+if isempty(dtnames)
+    warning('No remote access to datasets in ''%s''.',libref);
 end
 end
