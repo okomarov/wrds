@@ -2,16 +2,16 @@ function getAllDatasets(wrds, libname, outfolder, checksize, startfrom)
 % GETALLDATASETS Download all data sets of a WRDS library as zipped CSV
 %   GETALLDATASETS(CONN, LIBNAME, [OUTFOLDER], [CHECKSIZE])
 %       Where CONN should be a valid WRDS connection and
-%       LIBNAME should be a string with the SAS library, 
+%       LIBNAME should be a string with the SAS library,
 %       e.g. 'CRSPA'.
 %
 %       Specify where to save the downloaded datasets in OUTFOLDER.
 %       It defaults to fullfile(data, LIBNAME, datasetname.zip).
 %
-%       NOTE: an entire library can take up several GB on disk. 
-%             With CHECKSIZE set to true, first the size of library 
-%             is assessed and afterwards the user is asked 
-%             whether to proceed. 
+%       NOTE: an entire library can take up several GB on disk.
+%             With CHECKSIZE set to true, first the size of library
+%             is assessed and afterwards the user is asked
+%             whether to proceed.
 %
 % Examples:
 %   w = wrds('myusername');
@@ -37,11 +37,15 @@ end
 
 dtnames = wrds.getDatasetNames(libname);
 
+if isempty(dtnames)
+    return
+end
+
 N = numel(dtnames);
 if checksize
     fsizes = getAllDatasetFileSize(wrds, libname, 'gb');
     fsizes = cumsum(fsizes);
-    
+
     % Confirm bulk download
     msg    = sprintf(['The estimated compressed size of the library is %.2f GB.\n',...
                       'Do you want to proceed?'], fsizes(end)/COMPRESSION_FACTOR);
@@ -55,9 +59,9 @@ end
 verbosity      = wrds.isVerbose;
 wrds.isVerbose = false;
 
-h = waitbar(0,'Retrieving datasets...');
+h    = waitbar(0,'Retrieving datasets...');
 pause(0.1)
-msgh  = getfield(getappdata(h,'TMWWaitbar_handles'),'axesTitle');
+msgh = getfield(getappdata(h,'TMWWaitbar_handles'),'axesTitle');
 set(msgh,'Interpreter','none');
 
 cleanup = onCleanup(@()myCleanup(wrds,verbosity,h));

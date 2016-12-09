@@ -15,6 +15,10 @@ function fsize = getAllDatasetFileSize(wrds, libname, unit)
 % See also: GETDATASETFILESIZE, GETDATASETINFO
 
 dtnames = wrds.getDatasetNames(libname);
+if isempty(dtnames)
+    fsize = [];
+    return
+end
 
 % Switch verbosity off
 verbosity      = wrds.isVerbose;
