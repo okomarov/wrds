@@ -51,7 +51,7 @@ catch
     result = wrds.forwardCmd(cmd);
 
     oldState       = wrds.isVerbose;
-    cleanup        = onCleanup(@()myCleanup(wrds,fname,oldState));
+    cleanupState   = onCleanup(@()myCleanup(wrds,oldState));
     wrds.isVerbose = false;
 
     if strcmp(dtname, '_ALL_')
@@ -66,9 +66,6 @@ catch
 end
 end
 
-function myCleanup(wrds,fname,vstate)
-if ~isempty(fname)
-    wrds.forwardCmd(sprintf('rm %s;',fname));
-end
+function myCleanup(wrds,vstate)
 wrds.isVerbose = vstate;
 end
