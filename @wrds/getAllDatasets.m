@@ -46,7 +46,7 @@ if checksize
     msg    = sprintf(['The estimated compressed size of the library is %.2f GB.\n',...
                       'Do you want to proceed?'], fsizes(end)/COMPRESSION_FACTOR);
     answer = questdlg(msg, 'Bulk download','Yes');
-    if strmcpi(answer, {'No','Cancel'})
+    if any(strcmpi(answer, {'No','Cancel'}))
         return
     end
 end
