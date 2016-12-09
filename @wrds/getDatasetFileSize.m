@@ -19,32 +19,30 @@ function fsize = getDatasetFileSize(wrds, libdataname, unit)
 %
 % See also: GETDATASETINFO
 
-
 if nargin < 3
-    pow  = 1;
     unit = 'MB';
-else
-    [pow, unit] = getConversionPower(unit);
 end
+[pow, unit] = getConversionPower(unit);
 
 % Get dataset info
 info = wrds.getDatasetInfo(libdataname);
 info = reshape(info',1,[]);
 
 % Get size in units
-bytes    = regexpi(info,'(?<=File Size[^\d]*)\d+','match','once');
-bytes    = str2double(bytes);
-filesize = bytes/1024^pow;
+tkns     = regexpi(info,'(?<=File Size[^\d]*)(\d+)(\w{1,2})','tokens','once');
+num      = str2double(tkns{1});
+filesize = num/1024^(pow-getConversionPower(tkns{2}));
 
 if nargout == 0
     nf = java.text.DecimalFormat;
-    sprintf('%s %s',nf.format(bytes/1024^pow),unit)
+    sprintf('%s %s',nf.format(filesize),unit)
 else
     fsize = filesize;
 end
 end
 
 function [pow,unit] = getConversionPower(unit)
+% From 0 to 3
 validUnit = {'B','KB','MB','GB'};
 pos       = find(strncmpi(unit,validUnit,numel(unit)));
 if isempty(pos)
